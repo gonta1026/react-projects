@@ -48,3 +48,16 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+.game-info .game-info__list li {
+  margin-top: 20px;
+}
+.game-info .game-info__list li.isActive > button {
+  background: #fff;
+  color: red;
+}
+
+.game-info .game-info__list li > button + div {
+  margin-top: 10px;
+}
+
