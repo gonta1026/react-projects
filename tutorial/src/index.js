@@ -5,7 +5,7 @@ import './index.css';
 
 const Square = (props) => {
   return (
-    <button className="square" onClick={props.onClick}>
+    <button className={`square ${props.line ? 'active' : ''}`} onClick={props.onClick}>
       {props.value}
     </button>
   );
@@ -26,18 +26,30 @@ const calculateWinner = (squares) => {
   for (let i = 0; i < linesAtWin.length; i++) {
     const [a, b, c] = linesAtWin[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return {
+        isDraw: false,
+        winner: squares[a],
+        line: [a, b, c],
+      };
     }
+  }
+  if(squares.indexOf(null) === -1) {
+    return {
+      isDraw: true,
+      winner: null,
+      line: [],
+    };
   }
   return null;
 }
 
 class Board extends React.Component {
-  renderSquare(i) {//
+  renderSquare(i, line = false) {//
     return (
       <Square
         value={this.props.squares[i]}
         onClick={() => this.props.onClick(i)}
+        line={line}
       />
     );
   }
@@ -52,7 +64,7 @@ class Board extends React.Component {
                 {
                   Array(3).fill(0).map((col, j) => {
                     return(
-                      <span key={i * 3 + j}>{this.renderSquare(i * 3 + j)}</span>
+                      <span key={i * 3 + j}>{this.renderSquare(i * 3 + j, this.props.line.indexOf(i * 3 + j) !== -1)}</span>
                       
                     )
                   })
@@ -74,7 +86,8 @@ class Game extends React.Component {
         squares: Array(9).fill(null),
       }],
       stepNumber: 0,
-      xIsNext: true
+      xIsNext: true,
+      isToggle: true,
     };
   }
 
@@ -82,10 +95,10 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
     const current = history[history.length - 1];
     const squares = current.squares.slice();
-
     if (calculateWinner(squares) || squares[index]) {
       return;
     }
+    
     squares[index] = this.state.xIsNext ? 'X' : 'O';
     this.setState({
       history: history.concat({
@@ -103,13 +116,21 @@ class Game extends React.Component {
     })
   }
 
+  handleToggle() {
+    const isToggle = !this.state.isToggle;
+    this.setState({
+      isToggle: isToggle,
+    });
+  }
+
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
+    const settlement = calculateWinner(current.squares);
+    const asc = this.state.asc
     let isActive;
     const moves = history.map((step, move) => {
-      
+      // let hoge = this.isHoge(move);
       if (this.state.stepNumber === move){
         isActive = "isActive"
       } else {
@@ -119,7 +140,7 @@ class Game extends React.Component {
         'Go to move #' + move :
         'Go to game start';
       return (
-        <li  className={isActive} key={move}>
+        <li className={isActive} key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
           <div>
             {
@@ -129,7 +150,7 @@ class Game extends React.Component {
                     {
                       Array(3).fill(0).map((col, j) => {
                         return(
-                        <button className="square">{step.squares[(i * 3 + j)]}</button>
+                        <button className="square" key={i * 3 + j}>{step.squares[(i * 3 + j)]}</button>
                         )
                       })
                     }
@@ -141,22 +162,26 @@ class Game extends React.Component {
         </li>
       );
     });
-
+    console.log(settlement)
     let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
+    if (settlement) {
+      if (settlement.isDraw) {
+        status = "Draw";
+      } else {
+        status = "Winner: " + settlement.winner;
+      }
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={(index) => this.handleClick(index)}/>
+          <Board line={settlement ? settlement.line : ""} squares={current.squares} onClick={(index) => this.handleClick(index)}/>
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <ol className="game-info__list">{moves}</ol>
+          <button onClick={() => this.handleToggle()}>昇順・降順の切り替え</button>
+          <ol className="game-info__list">{this.state.isToggle ? moves : moves.reverse()}</ol>
         </div>
       </div>
     );
