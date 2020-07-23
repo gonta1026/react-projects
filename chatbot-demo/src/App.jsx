@@ -1,30 +1,56 @@
 import React from 'react';
 import defaultDataset from './dataset';
 import './assets/styles/style.css';
-import {AnswersList} from "./components";
+import {AnswersList, Chats} from "./components";
 export default class App extends React.Component {
   constructor(props){
     super(props);
     this.state = {
       answers: [],
-      chat: [],
+      chats: [],
       currentId: "init",
       dataset: defaultDataset,
       open: false
+    };
+    this.selectAnswer = this.selectAnswer.bind(this);
+  }
+
+  displayNextQuestin = (nextQuestionId) => {
+      const chats = this.state.chats;
+      chats.push({
+        text: this.state.dataset[nextQuestionId].question,
+        type: "question"
+      });
+      this.setState({
+        answers: this.state.dataset[nextQuestionId].answers,
+        chats: chats,
+        currentId: nextQuestionId,
+      })
+  }
+
+  selectAnswer = (selectedAnser, nextQuestionId) => {
+    switch(true){
+      case (nextQuestionId === "init"):
+        this.displayNextQuestin(nextQuestionId)
+        break;
+      default:
+        const chats = this.state.chats;
+        chats.push({
+          text: selectedAnser,
+          type: "answer"
+        });
+
+        this.setState({
+          chats: chats
+        })
+
+        this.displayNextQuestin(nextQuestionId);
     }
   }
 
-  initAnswer = () => {
-    const initDataset = this.state.dataset[this.state.currentId];
-    const initAnswers = initDataset.answers;
-
-    this.setState({
-      answers: initAnswers
-    })
-  }
-
   componentDidMount(){
-    this.initAnswer();
+    const initAnswer = "";
+    this.selectAnswer(initAnswer, this.state.currentId);
   }
 
   render(){
@@ -32,7 +58,8 @@ export default class App extends React.Component {
       <div>
         <section className="c-section">
           <div className="c-box">
-            <AnswersList answers={this.state.answers}/>
+            <Chats chats={this.state.chats}/>
+            <AnswersList answers={this.state.answers} selected={this.selectAnswer}/>
           </div>
         </section>
       </div>
