@@ -1,13 +1,8 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import { TextInput, FormButton } from "..";
-// import { FormButton } from "";
+import { FormContent, FormTitle, FormButtons } from "..";
 import WEBHOOK_URL from '../../webhookConfig'
-
 // const line = require('@line/bot-sdk');//todo いずれラインへの通知実装のために使いたい。
 
 const FormDialog = (props) => {
@@ -36,7 +31,6 @@ const FormDialog = (props) => {
     } catch {
       alert("送信が完了しました。追ってご連絡いたします🙌");
     }
-
     return props.handleClose();
   }
 
@@ -47,25 +41,12 @@ const FormDialog = (props) => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
-        <DialogContent>
-          <TextInput
-            label={"お名前（必須）"} multiline={false} rows={1}
-            value={name} type={"text"} onChange={event => setName(event.target.value)}
-          />
-          <TextInput
-            label={"email（必須）"} multiline={false} rows={1}
-            value={email} type={"email"} onChange={event => setEmail(event.target.value)}
-          />
-          <TextInput
-            label={"お問い合わせ内容"} multiline={true} rows={5}
-            value={description} type={"text"} onChange={event => setDescription(event.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <FormButton submitEvent={props.handleClose} text={"キャンセル"}/>
-          <FormButton submitEvent={submitForm} text={"送信"}/>
-        </DialogActions>
+        <FormTitle />
+        <FormContent
+          name={name} email={email} description={description}
+          setName={setName} setEmail={setEmail} setDescription={setDescription}
+        />
+        <FormButtons handleClose={props.handleClose} submitForm={submitForm}/>
       </Dialog>
   )
 }
