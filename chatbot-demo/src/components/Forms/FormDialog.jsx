@@ -7,6 +7,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { TextInput } from "../../components";
 import WEBHOOK_URL from '../../webhookConfig'
+// const line = require('@line/bot-sdk');//todo いずれラインへの通知実装のために使いたい。
 
 export default class FormDialog extends React.Component {
   constructor(props){
@@ -31,7 +32,7 @@ export default class FormDialog extends React.Component {
     this.setState({ description: event.target.value })
   }
 
-  submitForm = () =>　{
+  submitForm = async () =>　{
     const name = this.state.name;
     const email = this.state.email;
     const description = this.state.description;
@@ -43,19 +44,19 @@ export default class FormDialog extends React.Component {
           + '【問い合わせ内容】\n' + description
     };
 
-    // fetchメソッドでフォームの内容をSlackのIncoming Webhook URL に送信する
-    fetch(WEBHOOK_URL, {
+    
+    await fetch(WEBHOOK_URL, {
       method: 'POST',
       body: JSON.stringify(payload)
-    }).then(() => {
-      alert('送信が完了しました。追ってご連絡いたします🙌');
-      this.setState({
-        name: "",
-        email: "",
-        description: ""
-      })
-      this.props.handleClose()
     })
+
+    alert('送信が完了しました。追ってご連絡いたします🙌');
+    this.setState({
+      name: "",
+      email: "",
+      description: ""
+    })
+    this.props.handleClose()
   }
 
   render() {

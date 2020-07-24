@@ -1,8 +1,8 @@
 import React from 'react';
-import defaultDataset from './dataset';
 import './assets/styles/style.css';
 import {AnswersList, Chats, FormDialog} from "./components";
-// import FormDialog from './components/Forms/FromDialog';
+import {db} from "./firebase/index";
+
 export default class App extends React.Component {
   constructor(props){
     super(props);
@@ -10,7 +10,7 @@ export default class App extends React.Component {
       answers: [],
       chats: [],
       currentId: "init",
-      dataset: defaultDataset,
+      dataset: {},
       open: false
     };
     this.selectAnswer = this.selectAnswer.bind(this);
@@ -78,9 +78,27 @@ export default class App extends React.Component {
     })
   };
 
+
+  initDataset = (dataset) => {
+    this.setState({ dataset: dataset})
+  }
+
   componentDidMount(){
-    const initAnswer = "";
-    this.selectAnswer(initAnswer, this.state.currentId);
+    (async ()=>{ //ある特定の関数の中でasyncを扱う時のテクニック。無名関数をasyncで使って即時関数で実行させる。
+      const dataset = this.state.dataset
+      await db.collection("questions").get().then(snapshots => {
+        snapshots.forEach(doc => {
+          console.log(doc.id)
+          console.log(doc.data())
+          const id = doc.id
+          const data = doc.data()
+          dataset[id] = data
+        })
+      });
+      this.initDataset(dataset);
+      const initAnswer = "";
+      this.selectAnswer(initAnswer, this.state.currentId);
+    })();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot){
