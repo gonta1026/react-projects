@@ -1,12 +1,13 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { TextInput } from "../../components";
+import { TextInput, FormButton } from "..";
+// import { FormButton } from "";
 import WEBHOOK_URL from '../../webhookConfig'
+
 // const line = require('@line/bot-sdk');//todo いずれラインへの通知実装のために使いたい。
 
 const FormDialog = (props) => {
@@ -14,27 +15,28 @@ const FormDialog = (props) => {
   const [email, setEmail] = useState("");
   const [description, setDescription] = useState("");
 
-  const inputName = event => setName(event.target.value);
-  const inputEmail = event => setEmail(event.target.value);
-  const inputDescription = event => setDescription(event.target.value);
-
   const submitForm = async () =>　{
-    const payload = {
-      text: 'お問い合わせがありました\n'
-          + 'お名前: ' + name + '\n'
-          + 'メールアドレス: ' + email + '\n'
-          + '【問い合わせ内容】\n' + description
-    };
+    try {
+      const payload = {
+        text: 'お問い合わせがありました\n' +
+          'お名前: ' + name + '\n' +
+          'メールアドレス: ' + email + '\n' +
+          '【問い合わせ内容】\n' + description
+      };
 
-    await fetch(WEBHOOK_URL, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    })
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      })
 
-    alert('送信が完了しました。追ってご連絡いたします🙌');
-    setName("");
-    setEmail("");
-    setDescription("");
+      alert('送信が完了しました。追ってご連絡いたします🙌');
+      setName("");
+      setEmail("");
+      setDescription("");
+    } catch {
+      alert("送信が完了しました。追ってご連絡いたします🙌");
+    }
+
     return props.handleClose();
   }
 
@@ -61,12 +63,8 @@ const FormDialog = (props) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={props.handleClose} color="primary">
-            キャンセル
-          </Button>
-          <Button onClick={submitForm} color="primary" autoFocus>
-            送信
-          </Button>
+          <FormButton submitEvent={props.handleClose} text={"キャンセル"}/>
+          <FormButton submitEvent={submitForm} text={"送信"}/>
         </DialogActions>
       </Dialog>
   )

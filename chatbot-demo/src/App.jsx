@@ -9,6 +9,7 @@ const App = () => {
   const [currentId, setCurrentId] = useState("init");
   const [dataset, setDataset] = useState({});
   const [open, setOpen] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const displayNextQuestion = (nextQuestionId, nextDataset) => {
       addChats({
@@ -20,8 +21,8 @@ const App = () => {
   }
 
   const selectAnswer = (selectedAnser, nextQuestionId) => {
+    setDisabled(true);
     switch(true){
-
       case (nextQuestionId === "contact"):
         handleClickOpen()
         break;
@@ -40,6 +41,7 @@ const App = () => {
 
         setTimeout(() => {
           displayNextQuestion(nextQuestionId, dataset[nextQuestionId]);
+          setDisabled(false);
         }, 500);
     }
   }
@@ -55,10 +57,11 @@ const App = () => {
   };
     const handleClose = useCallback(() => {
       setOpen(false)
-    }, [setOpen]);
+      setDisabled(false);
+    }, [open]);
 
   //ある特定の関数の中でasyncを扱う時のテクニック。無名関数をasyncで使って即時関数で実行させる。
-  useEffect(()=> {
+  useEffect(()=> {  //初回だけのmount
     (async ()=>{ 
       const initDataset = {}
       // const dataset = this.state.dataset
@@ -69,7 +72,7 @@ const App = () => {
           initDataset[id] = data
         })
       });
-
+      
       setDataset(initDataset);
       displayNextQuestion(currentId, initDataset[currentId])
     })();
@@ -80,13 +83,14 @@ const App = () => {
     if (scrollArea) {
       scrollArea.scrollTop = scrollArea.scrollHeight;
     }
+
   });
 
   return (
       <section className="c-section">
         <div className="c-box">
           <Chats chats={chats}/>
-          <AnswersList answers={answers} selected={selectAnswer}/>
+          <AnswersList disabled={disabled} answers={answers} selected={selectAnswer}/>
           <FormDialog open={open} handleClose={handleClose}/>
         </div>
       </section>
