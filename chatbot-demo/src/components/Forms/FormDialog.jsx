@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -9,34 +9,16 @@ import { TextInput } from "../../components";
 import WEBHOOK_URL from '../../webhookConfig'
 // const line = require('@line/bot-sdk');//todo いずれラインへの通知実装のために使いたい。
 
-export default class FormDialog extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      name: "",
-      email: "",
-      description: ""
-    }
-    this.inputName = this.inputName.bind(this)
-    this.inputEmail = this.inputEmail.bind(this)
-    this.inputDescription = this.inputDescription.bind(this)
-  }
+const FormDialog = (props) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [description, setDescription] = useState("");
 
-  inputName = (event) => {
-    this.setState({ name: event.target.value })
-  }
-  inputEmail = (event) => {
-    this.setState({ email: event.target.value })
-  }
-  inputDescription = (event) => {
-    this.setState({ description: event.target.value })
-  }
+  const inputName = event => setName(event.target.value);
+  const inputEmail = event => setEmail(event.target.value);
+  const inputDescription = event => setDescription(event.target.value);
 
-  submitForm = async () =>　{
-    const name = this.state.name;
-    const email = this.state.email;
-    const description = this.state.description;
-
+  const submitForm = async () =>　{
     const payload = {
       text: 'お問い合わせがありました\n'
           + 'お名前: ' + name + '\n'
@@ -44,26 +26,22 @@ export default class FormDialog extends React.Component {
           + '【問い合わせ内容】\n' + description
     };
 
-    
     await fetch(WEBHOOK_URL, {
       method: 'POST',
       body: JSON.stringify(payload)
     })
 
     alert('送信が完了しました。追ってご連絡いたします🙌');
-    this.setState({
-      name: "",
-      email: "",
-      description: ""
-    })
-    this.props.handleClose()
+    setName("");
+    setEmail("");
+    setDescription("");
+    return props.handleClose();
   }
 
-  render() {
-    return(  
-    <Dialog
-        open={this.props.open}
-        onClose={this.props.handleClose}
+  return(  
+      <Dialog
+        open={props.open}
+        onClose={props.handleClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -71,26 +49,27 @@ export default class FormDialog extends React.Component {
         <DialogContent>
           <TextInput
             label={"お名前（必須）"} multiline={false} rows={1}
-            value={this.state.name} type={"text"} onChange={this.inputName}
+            value={name} type={"text"} onChange={event => setName(event.target.value)}
           />
           <TextInput
             label={"email（必須）"} multiline={false} rows={1}
-            value={this.state.email} type={"email"} onChange={this.inputEmail}
+            value={email} type={"email"} onChange={event => setEmail(event.target.value)}
           />
           <TextInput
             label={"お問い合わせ内容"} multiline={true} rows={5}
-            value={this.state.description} type={"text"} onChange={this.inputDescription}
+            value={description} type={"text"} onChange={event => setDescription(event.target.value)}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.props.handleClose} color="primary">
+          <Button onClick={props.handleClose} color="primary">
             キャンセル
           </Button>
-          <Button onClick={this.submitForm} color="primary" autoFocus>
+          <Button onClick={submitForm} color="primary" autoFocus>
             送信
           </Button>
         </DialogActions>
       </Dialog>
-    )
-  }
+  )
 }
+
+export default FormDialog;
