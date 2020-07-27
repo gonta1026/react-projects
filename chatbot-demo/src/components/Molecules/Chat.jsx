@@ -6,17 +6,24 @@ import Torahack from "../../assets/img/torahack.png"
 import {Avator, ListText} from "../index"
 
 const Chat = (props) => {
-  const isQuestion = (props.type === "question")
-  const classes = isQuestion ? "p-chat__row" : "p-chat__reverse";
-  const image = isQuestion ? Torahack : NoProfile;
+  const isQuestion = (props.type === "question");
+  let classes
+  let image
+  if (isQuestion){
+    classes = "p-chat__row";
+    image = Torahack;
+  } else {
+    classes = "p-chat__reverse";
+    image = NoProfile;
+  }
 
   return (  
-        <ListItem className={classes}>
-          <ListItemAvatar>
-            <Avator image={image}/>
-          </ListItemAvatar>
-          <ListText text={props.text}/>
-        </ListItem>
+    <ListItem className={classes}>
+      <ListItemAvatar>
+        <Avator image={image}/>
+      </ListItemAvatar>
+      <ListText text={props.text}/>
+    </ListItem>
   )
 }
 

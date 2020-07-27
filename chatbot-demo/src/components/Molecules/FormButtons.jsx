@@ -3,8 +3,6 @@ import DialogActions from '@material-ui/core/DialogActions';
 import { FormButton } from "../";
 
 const FormButtons = (props) => {
-  const isQuestion = (props.type === "question")
-  const classes = isQuestion ? "p-chat__row" : "p-chat__reverse";
 
   return (  
     <DialogActions>

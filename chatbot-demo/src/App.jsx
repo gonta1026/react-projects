@@ -9,7 +9,7 @@ const App = () => {
   const [currentId, setCurrentId] = useState("init");
   const [dataset, setDataset] = useState({});
   const [open, setOpen] = useState(false);
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabledAtAnswer] = useState(false);
 
   const displayNextQuestion = (nextQuestionId, nextDataset) => {
       addChats({
@@ -20,13 +20,16 @@ const App = () => {
       setCurrentId(nextQuestionId);
   }
 
+  const urlCheck = (url) => {
+    return /^https:*/.test(url);
+  }
   const selectAnswer = (selectedAnser, nextQuestionId) => {
-    setDisabled(true);
+    setDisabledAtAnswer(true);
     switch(true){
       case (nextQuestionId === "contact"):
         handleClickOpen()
         break;
-      case (/^https:*/.test(nextQuestionId)):
+      case (urlCheck(nextQuestionId)):
         const aTag = document.createElement("a");
         aTag.href = nextQuestionId;
         aTag.target = "_blank";
@@ -41,13 +44,13 @@ const App = () => {
 
         setTimeout(() => {
           displayNextQuestion(nextQuestionId, dataset[nextQuestionId]);
-          setDisabled(false);
+          setDisabledAtAnswer(false);
         }, 500);
     }
   }
 
   const addChats = (chat) => {
-    setChats(prevChats => {
+    setChats(prevChats => {//前回までのstateを取得してまーじさせる
       return [...prevChats, chat];
     })
   }
@@ -57,11 +60,11 @@ const App = () => {
   };
     const handleClose = useCallback(() => {
       setOpen(false)
-      setDisabled(false);
+      setDisabledAtAnswer(false);
     }, [open]);
 
   //ある特定の関数の中でasyncを扱う時のテクニック。無名関数をasyncで使って即時関数で実行させる。
-  useEffect(()=> {  //初回だけのmount
+  useEffect(()=> {  //初回だけのmountする。第二引数が空の配列
     (async ()=>{ 
       const initDataset = {}
       // const dataset = this.state.dataset
@@ -78,12 +81,11 @@ const App = () => {
     })();
   }, []);
 
-  useEffect(()=> {
+  useEffect(()=> {//毎回呼ばれるところ
     const scrollArea = document.getElementById("scroll-area");
     if (scrollArea) {
       scrollArea.scrollTop = scrollArea.scrollHeight;
     }
-
   });
 
   return (
