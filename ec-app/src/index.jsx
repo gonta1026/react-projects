@@ -6,7 +6,6 @@ import App from './App';
 import  {createBrowserHistory} from "history";
 import {unregister} from './serviceWorker';
 import {ConnectedRouter} from "connected-react-router"
-import './index.css';
 
 const history = createBrowserHistory();//各ページでの繊維履歴を持っている。
 export const getStore = store(history);
