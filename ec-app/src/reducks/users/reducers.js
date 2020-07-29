@@ -12,6 +12,11 @@ export const UsersReducer = (state = initialState.users, action)  => {
                 ...state,
                 ...action.payload
             };
+        case Actions.SIGN_OUT:
+            console.log("SIGN_OUTです！")
+            return {
+                ...action.payload
+            };
         default:
             console.log("defaultだー")
             return state

@@ -1,6 +1,30 @@
-import {signInAction} from "./actions"
+import {signInAction, signOutAction} from "./actions"
 import {push} from "connected-react-router";
 import {db, auth, firebaseTimeStapmp} from "../../firebase/index"
+// import { supportsHistory } from "history/DOMUtils";
+
+export const listenAuthState = () => {
+  console.log("リッスンだよ")
+  return async (dispatch) => {
+    return auth.onAuthStateChanged(user => {
+      if (user){
+         const uid = user.uid;
+         db.collection("users").doc(uid).get()
+           .then(snapshot => {
+             const data = snapshot.data();
+             dispatch(signInAction({
+               role: data.role,
+               isSigndIn: true,
+               uid: uid,
+               username: data.username
+             }))
+           })
+      } else {
+        dispatch(push("/signin"));
+      }
+    });
+  }
+}
 
 export const signIn = (email, password) => {
   console.log("operationsです")
@@ -69,3 +93,32 @@ export const signUp = (username, email, password, confirmPassword) => {
     });
   }
 }
+
+export const signOut = () => {
+  return async (dispatch) => {
+    auth.signOut()
+    .then(()=>{
+      dispatch(signOutAction());
+      dispatch(push("/signin"));
+    })
+  }
+}
+
+export const resetPassword = (email) => {
+  return async (dispatch) => {
+    if (email === ""){
+      alert("入力がされていません！");
+      return false;
+    } else {
+      auth.sendPasswordResetEmail()
+      .then(() => {
+        alert("登録のメールアドレスにパスワードリセット用のメールをお送りしました！");
+        dispatch(push("/signin"));
+      })
+      .catch(() =>{
+        alert("パスワードのリセットに失敗しました！");
+      });
+    }
+  }
+}
+
