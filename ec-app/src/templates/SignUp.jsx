@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import {signUp} from "../reducks/users/operations"
 
 const SignUp = () => {
-  const dispatch = useDispatch(signUp);
+  const dispatch = useDispatch();
   const [username, setUsername] = useState("ss"),
         [email, setEmail] = useState(""),
         [password, setPassword] = useState(""),

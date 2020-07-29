@@ -3,9 +3,10 @@ import TextInput from "../components/UIkit/TextInput"
 import PrimaryButton from "../components/UIkit/PrimaryButton";
 import {useDispatch} from "react-redux";
 import {signIn} from "../reducks/users/operations"
+import { push } from "connected-react-router";
 
 const SignIn = () => {
-  const dispatch = useDispatch(signIn);
+  const dispatch = useDispatch();
   const [email, setEmail] = useState(""),
         [password, setPassword] = useState("");
       
@@ -35,6 +36,8 @@ const SignIn = () => {
       <div className="module-spacer--medium" />
       <div className="center">
         <PrimaryButton label={"signin"} onClick={() => dispatch(signIn(email, password))}/>
+        <p onClick={() => dispatch(push("/signup"))}>まだ新規登録をされていない方</p>
+        <p onClick={() => dispatch(push("/signin/reset"))}>パスワードを忘れた方</p>
       </div>
     </div>
   )
