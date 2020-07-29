@@ -1,12 +1,13 @@
 export const SIGN_IN = "SIGN_IN";
 export const signInAction = (userState) => {
+  console.log("actionsです")
   return {
     type: "SIGN_IN",
     payload: {
-      icon: userState.icon,
+      role: userState.role,
       isSigndIn: true,
-      uId: userState.uId,
-      userName: userState.userName
+      uid: userState.uid,
+      username: userState.username
     }
   }
 }
@@ -17,8 +18,8 @@ export const signOutAction = () => {
     type: "SIGN_OUT",
     payload: {
       isSigndIn: false,
-      uId: "",
-      userName: ""
+      uid: "",
+      username: ""
     }
   }
 }

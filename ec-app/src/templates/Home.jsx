@@ -10,11 +10,11 @@ const Home = () => {
   return (
     <div>
       <h2>Homeページ</h2>
-      <button onClick={() => dispatch(push("/login"))}>
+      <button onClick={() => dispatch(push("/signIn"))}>
         ログインページへ
       </button>
       <p>{user.uId}</p>
-      <p>{user.userName}</p>
+      <p>{user.username}</p>
     </div>
   );
 }
