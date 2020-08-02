@@ -3,11 +3,14 @@ import {push} from "connected-react-router";
 import {db, auth, firebaseTimeStapmp} from "../../firebase/index"
 // import { supportsHistory } from "history/DOMUtils";
 
-export const listenAuthState = () => {
-  console.log("リッスンだよ")
+export const listenAuthState = (pathname) => {
+  console.log(pathname)
   return async (dispatch) => {
     return auth.onAuthStateChanged(user => {
       if (user){
+         if (pathname === "/signin" || pathname === "/signin/reset" || pathname === "/signup") {
+           dispatch(push("/"));
+         }
          const uid = user.uid;
          db.collection("users").doc(uid).get()
            .then(snapshot => {
