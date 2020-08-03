@@ -4,5 +4,8 @@ export const initialState = {
       uid: "",
       role: "",
       username: ""
-    }
-};
+    },
+    products: {
+      list: [],
+    },
+}
