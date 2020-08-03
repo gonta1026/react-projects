@@ -8,9 +8,9 @@ export const listenAuthState = (pathname) => {
   return async (dispatch) => {
     return auth.onAuthStateChanged(user => {
       if (user){
-         if (pathname === "/signin" || pathname === "/signin/reset" || pathname === "/signup") {
-           dispatch(push("/"));
-         }
+        //  if (pathname === "/signin" || pathname === "/signin/reset" || pathname === "/signup") {
+        //    dispatch(push("/"));
+        //  }
          const uid = user.uid;
          db.collection("users").doc(uid).get()
            .then(snapshot => {
