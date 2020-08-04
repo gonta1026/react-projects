@@ -1,16 +1,12 @@
 import {signInAction, signOutAction} from "./actions"
 import {push} from "connected-react-router";
-import {db, auth, firebaseTimeStapmp} from "../../firebase/index"
-// import { supportsHistory } from "history/DOMUtils";
+import {db, auth, firebaseTimeStamp} from "../../firebase/index"
 
 export const listenAuthState = (pathname) => {
   console.log(pathname)
   return async (dispatch) => {
     return auth.onAuthStateChanged(user => {
       if (user){
-        //  if (pathname === "/signin" || pathname === "/signin/reset" || pathname === "/signup") {
-        //    dispatch(push("/"));
-        //  }
          const uid = user.uid;
          db.collection("users").doc(uid).get()
            .then(snapshot => {
@@ -79,7 +75,7 @@ export const signUp = (username, email, password, confirmPassword) => {
 
       if (user){
         const uid = user.uid;
-        const timeStamp = firebaseTimeStapmp.now();
+        const timeStamp = firebaseTimeStamp.now();
         const initialUserData = {
           created_at: timeStamp,
           email: email,
