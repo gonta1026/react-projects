@@ -1,12 +1,18 @@
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useEffect} from "react";
 import {SelectBox,TextInput,PrimaryButton} from "../components/UIkit";
 import {ImageArea} from "../components/Products";
 import {useDispatch} from "react-redux";
 import {saveProduct} from "../reducks/products/operations";
-// import {storage} "../firebase/index";
-const ProductEdit = () => {
+import {db} from "../firebase/index";
+const ProductEdit = (props) => {
   const dispatch = useDispatch();
-
+  console.log(props.match);
+  let id = window.location.pathname.split('/product/edit')[1];
+  if (id !== "") {
+    id = id.split('/')[1]
+  }
+  console.log(id);
+  
   const [name, setName] = useState(""),
         [description, setDescription] = useState(""),
         [category, setCategory] = useState(""),
@@ -38,7 +44,23 @@ const ProductEdit = () => {
     {id: "men", name: "男性"},
     {id: "female", name: "女性"},
   ];
-  
+
+  useEffect(() => {
+    if (id !== ""){
+        db.collection("products").doc(id).get()
+            .then(snapshot => {
+                const data = snapshot.data();
+                setImages(data.images);
+                setName(data.name);
+                setDescription(data.description);
+                setCategory(data.category);
+                setGender(data.gender);
+                setPrice(data.price);
+            })
+    }
+  }, [id])
+  console.log(name)
+
   return (
     <section>
       <h2 className="u-text__headline u-text-center">商品の登録・編集</h2>
