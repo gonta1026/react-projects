@@ -21,6 +21,9 @@ const useStyles = makeStyles({
         padding: 0,
         height: 48,
         width: 48
+    },
+    width: {
+        width: "50%"
     }
 })
 
@@ -112,10 +115,12 @@ const SetSizesArea = (props) => {
                     <TextInput
                         fullWidth={false} label={"サイズ"} multiline={false} required={true}
                         onChange={inputSize} rows={1} value={size} type={"text"}
+                        className={classes.width}
                     />
                     <TextInput
                         fullWidth={false} label={"数量"} multiline={false} required={true}
                         onChange={inputQuantity} rows={1} value={quantity} type={"number"}
+                        className={classes.width}
                     />
                 </div>
                 <IconButton className={classes.checkIcon} onClick={() => addSize(index, size, quantity)}>
