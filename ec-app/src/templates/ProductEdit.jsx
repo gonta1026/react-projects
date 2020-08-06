@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { SelectBox, TextInput, PrimaryButton } from "../components/UIkit";
-import { ImageArea } from "../components/Products";
+import { ImageArea, SetSizeArea } from "../components/Products";
 import { useDispatch } from "react-redux";
 import { saveProduct } from "../reducks/products/operations";
 import { db } from "../firebase/index";
@@ -13,12 +13,13 @@ const ProductEdit = (props) => {
         id = id.split("/")[1];
     }
 
-    const [name, setName] = useState(""),
-        [description, setDescription] = useState(""),
-        [category, setCategory] = useState(""),
-        [price, setPrice] = useState(""),
-        [images, setImages] = useState([]),
-        [gender, setGender] = useState("");
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [category, setCategory] = useState("");
+    const [price, setPrice] = useState("");
+    const [images, setImages] = useState([]);
+    const [gender, setGender] = useState("");
+    const [sizes, setSizes] = useState("");
 
     const inputName = useCallback((e) => {
         setName(e.target.value);
@@ -55,6 +56,7 @@ const ProductEdit = (props) => {
                     setCategory(data.category);
                     setGender(data.gender);
                     setPrice(data.price);
+                    setSizes(data.sizes);
                 });
         }
     }, [id]);
@@ -80,11 +82,16 @@ const ProductEdit = (props) => {
                 <TextInput fullWidth={true} label={"価格"} multiline={true}
                     required={true} rows={1} type={"number"} onChange={inputPrice} value={price} />
 
-                <div className="module-spacer--medium" />
+                <div className="module-spacer--small" />
+
+                <SetSizeArea sizes={sizes} setSizes={setSizes} />
+
+                <div className="module-spacer--small" />
+
                 <div className="center">
                     <PrimaryButton
                         label={"商品情報を登録"}
-                        onClick={() => dispatch(saveProduct(id, name, description, category, price, gender, images))} />
+                        onClick={() => dispatch(saveProduct(id, name, description, category, price, gender, images, sizes))} />
                 </div>
             </div>
         </section>
