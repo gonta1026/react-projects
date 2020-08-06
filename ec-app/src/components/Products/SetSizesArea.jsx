@@ -1,9 +1,16 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { TextInput } from "../UIkit";
-import { IconButton, TableBody, TableCell, Table, Paper, TableContainer, TableRow, TableHead } from "@material-ui/core";
-import { Delete } from '@material-ui/icons/Delete';
-import { CheckCircle } from '@material-ui/icons';
-import { Edit } from '@material-ui/icons/Edit';
+import IconButton from "@material-ui/core/IconButton";
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableContainer from '@material-ui/core/TableContainer';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import Paper from '@material-ui/core/Paper';
 import { makeStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles({
@@ -15,23 +22,21 @@ const useStyles = makeStyles({
         height: 48,
         width: 48
     }
-});
+})
 
-
-
-const SetSizeArea = (props) => {
+const SetSizesArea = (props) => {
     const classes = useStyles()
-    const [index, setIndex] = useState(0);
-    const [size, setSize] = useState("");
-    const [quantity, setQuantity] = useState(0);
 
+    const [index, setIndex] = useState(0),
+        [size, setSize] = useState(""),
+        [quantity, setQuantity] = useState(0);
 
-    const inputSize = useCallback((e) => {
-        setSize(e.target.value);
+    const inputSize = useCallback((event) => {
+        setSize(event.target.value)
     }, [setSize]);
 
-    const inputQuantity = useCallback((e) => {
-        setQuantity(e.target.value);
+    const inputQuantity = useCallback((event) => {
+        setQuantity(event.target.value)
     }, [setQuantity]);
 
     const addSize = (index, size, quantity) => {
@@ -40,9 +45,6 @@ const SetSizeArea = (props) => {
             return false
         } else {
             if (index === props.sizes.length) {
-                console.log(index);
-                console.log(props.sizes.length);
-
                 props.setSizes(prevState => [...prevState, { size: size, quantity: quantity }]);
                 setIndex(index + 1);
                 setSize("");
@@ -74,7 +76,7 @@ const SetSizeArea = (props) => {
     }, [props.sizes.length])
 
     return (
-        <div>
+        <div aria-label="サイズ展開">
             <TableContainer component={Paper}>
                 <Table aria-label="simple table">
                     <TableHead>
@@ -89,16 +91,16 @@ const SetSizeArea = (props) => {
                         {props.sizes.length > 0 && (
                             props.sizes.map((item, index) => (
                                 <TableRow key={item.size}>
-                                    <TableCell component="" scope="row">{item.size}</TableCell>
+                                    <TableCell component="th" scope="row">{item.size}</TableCell>
                                     <TableCell>{item.quantity}</TableCell>
                                     <TableCell className={classes.iconCell}>
                                         <IconButton className={classes.iconCell} onClick={() => editSize(index, item.size, item.quantity)}>
-                                            <Edit />
+                                            <EditIcon />
                                         </IconButton>
                                     </TableCell>
                                     <TableCell className={classes.iconCell}>
                                         <IconButton className={classes.iconCell} onClick={() => deleteSize(index)}>
-                                            <Delete />
+                                            <DeleteIcon />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -117,11 +119,12 @@ const SetSizeArea = (props) => {
                     />
                 </div>
                 <IconButton className={classes.checkIcon} onClick={() => addSize(index, size, quantity)}>
-                    <CheckCircle />
+                    <CheckCircleIcon />
                 </IconButton>
             </TableContainer>
-        </div >
-    )
+            <div className="module-spacer--small" />
+        </div>
+    );
 };
 
-export default SetSizeArea;
+export default SetSizesArea;
