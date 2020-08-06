@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { TableContainer } from "@material-ui/core";
 
-const SetSizeArea = (props) => {};
+const SetSizeArea = (props) => {
+    return (
+        <div>
+            <TableContainer />
+        </div>
+    )
+};
 
 export default SetSizeArea;
