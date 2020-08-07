@@ -7,7 +7,6 @@ import { saveProduct } from "../reducks/products/operations";
 import { db } from "../firebase/index";
 const ProductEdit = (props) => {
     const dispatch = useDispatch();
-    console.log(props.match);
     let id = window.location.pathname.split("/product/edit")[1];
     if (id !== "") {
         id = id.split("/")[1];
@@ -60,7 +59,7 @@ const ProductEdit = (props) => {
                 });
         }
     }, [id]);
-
+    console.log(images);
     return (
         <section>
             <h2 className="u-text__headline u-text-center">商品の登録・編集</h2>

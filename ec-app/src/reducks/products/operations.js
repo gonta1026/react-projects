@@ -1,12 +1,25 @@
-import {
-    push
-} from "connected-react-router";
-import {
-    db,
-    firebaseTimeStamp
-} from "../../firebase/index";
+import { push } from "connected-react-router";
+import { fetchProductsAction } from "./actions";
+import { db, firebaseTimeStamp } from "../../firebase/index";
 
 const productRef = db.collection("products");
+
+export const fetchProduct = () => {
+    return async (dispatch) => {
+        productRef.orderBy("updated_at", "desc").get()
+            .then((snapshots) => {
+                const productList = [];
+                snapshots.forEach((snapshot) => {
+                    const product = snapshot.data();
+                    productList.push(product);
+                });
+                dispatch(fetchProductsAction(productList));
+            })
+            .catch((error) => {
+                throw new Error(error);
+            })
+    }
+};
 
 export const saveProduct = (id, name, description, category, price, gender, images, sizes) => {
     return async (dispatch) => {
