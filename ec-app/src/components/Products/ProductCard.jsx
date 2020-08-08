@@ -108,22 +108,18 @@ const ProductCard = (props) => {
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
                 >
-                    <MenuItem
-                        onClick={() => {
-                            dispatch(push('/product/edit/' + props.id))
-                            handleClose();
-                        }}
-                    >
-                        編集する
-                            </MenuItem>
-                    <MenuItem
-                        onClick={() => {
-                            dispatch(deleteProduct(props.id))
-                            handleClose();
-                        }}
-                    >
-                        削除する
-                            </MenuItem>
+
+                    <MenuItem onClick={() => {
+                        dispatch(push('/product/edit/' + props.id))
+                        handleClose();
+                    }}
+                    >編集する</MenuItem>
+
+                    <MenuItem onClick={() => {
+                        dispatch(deleteProduct(props.id))
+                        handleClose();
+                    }}
+                    >削除する</MenuItem>
                 </Menu>
             </CardContent>
         </Card>
