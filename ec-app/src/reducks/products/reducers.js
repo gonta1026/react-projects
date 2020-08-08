@@ -11,6 +11,11 @@ export const ProductsReducer = (state = initialState.products, action) => {
                 ...state,
                 list: [...action.payload]//!![]で囲まないとstoreの検知をしてくれない。
             };
+        case Actions.DELETE_PRODUCT:
+            return {
+                ...state,
+                list: [...action.payload]
+            };
         default:
             console.log("defaultだー")
             return state
