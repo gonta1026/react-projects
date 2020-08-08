@@ -14,11 +14,18 @@ const ProductList = (props) => {
 
     return (
         <section className="c-section-wrapin">
-            {products.length > 0 && (
-                products.map((product) => <ProductCard key={product.id} />)
-            )}
+            <div className="p-grid__row">
+                {products.length > 0 && (
+                    products.map(product => (
+                        <ProductCard
+                            key={product.id} id={product.id} images={product.images}
+                            price={product.price} name={product.name}
+                        />
+                    ))
+                )}
+            </div>
         </section>
-    )
+    );
 }
 
 export default ProductList;
