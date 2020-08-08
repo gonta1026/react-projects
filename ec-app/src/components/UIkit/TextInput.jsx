@@ -13,6 +13,7 @@ const TextInput = (props) => {
       type={props.type}
       onChange={props.onChange}
       value={props.value}
+      className={props.className}
     />
   )
 }

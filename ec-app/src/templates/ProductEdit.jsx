@@ -1,13 +1,12 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { SelectBox, TextInput, PrimaryButton } from "../components/UIkit";
-import { ImageArea, SetSizeArea } from "../components/Products";
+import { ImageArea, SetSizesArea } from "../components/Products";
 import { useDispatch } from "react-redux";
 import { saveProduct } from "../reducks/products/operations";
 import { db } from "../firebase/index";
 const ProductEdit = (props) => {
     const dispatch = useDispatch();
-    console.log(props.match);
     let id = window.location.pathname.split("/product/edit")[1];
     if (id !== "") {
         id = id.split("/")[1];
@@ -19,7 +18,7 @@ const ProductEdit = (props) => {
     const [price, setPrice] = useState("");
     const [images, setImages] = useState([]);
     const [gender, setGender] = useState("");
-    const [sizes, setSizes] = useState("");
+    const [sizes, setSizes] = useState([]);
 
     const inputName = useCallback((e) => {
         setName(e.target.value);
@@ -60,7 +59,7 @@ const ProductEdit = (props) => {
                 });
         }
     }, [id]);
-
+    console.log(images);
     return (
         <section>
             <h2 className="u-text__headline u-text-center">商品の登録・編集</h2>
@@ -84,7 +83,7 @@ const ProductEdit = (props) => {
 
                 <div className="module-spacer--small" />
 
-                <SetSizeArea sizes={sizes} setSizes={setSizes} />
+                <SetSizesArea sizes={sizes} setSizes={setSizes} />
 
                 <div className="module-spacer--small" />
 

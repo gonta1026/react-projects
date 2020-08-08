@@ -1,11 +1,24 @@
-// import * as Actions from "./actions";
-import { initialState } from "../store/initialState";
+import * as Actions from './actions';
+import { initialState } from '../store/initialState';
 
 export const ProductsReducer = (state = initialState.products, action) => {
-
+    console.log("reducers");
+    console.log(state)
+    console.log(action)
     switch (action.type) {
+        case Actions.FETCH_PRODUCTS:
+            return {
+                ...state,
+                list: [...action.payload]//!![]で囲まないとstoreの検知をしてくれない。
+            };
+        case Actions.DELETE_PRODUCT:
+            return {
+                ...state,
+                list: [...action.payload]
+            };
         default:
-            console.log("defaultだー");
-            return state;
+            console.log("defaultだー")
+            return state
     }
 };
+
