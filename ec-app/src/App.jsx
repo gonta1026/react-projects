@@ -2,12 +2,16 @@ import React from "react";
 import Router from "./Router";
 import "../src/assets/reset.css";
 import "../src/assets/style.css";
+import { Header } from "./components/Header";
 
 const App = () => {
     return (
-        <React.StrictMode>
-            <Router />
-        </React.StrictMode>
+        <>
+            <Header />
+            <main className="c-main">
+                <Router />
+            </main>
+        </>
     );
 };
 
