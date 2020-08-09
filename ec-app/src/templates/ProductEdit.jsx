@@ -5,7 +5,7 @@ import { ImageArea, SetSizesArea } from "../components/Products";
 import { useDispatch } from "react-redux";
 import { saveProduct } from "../reducks/products/operations";
 import { db } from "../firebase/index";
-const ProductEdit = (props) => {
+const ProductEdit = () => {
     const dispatch = useDispatch();
     let id = window.location.pathname.split("/product/edit")[1];
     if (id !== "") {
