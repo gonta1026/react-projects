@@ -1,6 +1,8 @@
 import { signInAction, signOutAction } from "./actions"
 import { push } from "connected-react-router";
-import { db, auth, firebaseTimeStamp } from "../../firebase/index"
+import { db, auth, FirebaseTimeStamp } from "../../firebase/index"
+
+const usersRef = db.collection("users");
 
 export const listenAuthState = (pathname) => {
   console.log(pathname)
@@ -24,6 +26,17 @@ export const listenAuthState = (pathname) => {
     });
   }
 }
+
+export const addProductToCart = (addedProduct) => {
+  return async (dispatch, getState) => {
+    const uid = getState().users.uid;
+    const cartRef = usersRef.doc(uid).collection('cart').doc();
+    addedProduct['cartId'] = cartRef.id;
+    await cartRef.set(addedProduct);
+    dispatch(push('/cart'))
+  }
+}
+
 
 export const signIn = (email, password) => {
   console.log("operationsです")
@@ -73,7 +86,7 @@ export const signUp = (username, email, password, confirmPassword) => {
 
         if (user) {
           const uid = user.uid;
-          const timeStamp = firebaseTimeStamp.now();
+          const timeStamp = FirebaseTimeStamp.now();
           const initialUserData = {
             created_at: timeStamp,
             email: email,

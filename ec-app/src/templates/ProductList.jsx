@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ProductCard } from '../components/Products';
 import { fetchProduct } from '../reducks/products/operations';
 import { getProducts } from '../reducks/products/selectors';
-const ProductList = (props) => {
+const ProductList = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const products = getProducts(selector);
