@@ -71,7 +71,7 @@ const ClosableDrawer = (props) => {
                 variant="temporary"
                 anchor={"right"}
                 open={props.open}
-                onClose={(e) => props.onClose(e, false)}
+                onClose={(e) => props.onClose(e)}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
@@ -80,8 +80,8 @@ const ClosableDrawer = (props) => {
                 }}
             >
                 <div
-                    onClose={(e) => props.onClose(e, false)}
-                    onKeyDown={(e) => props.onClose(e, false)}
+                    onClose={(e) => props.onClose(e)}
+                    onKeyDown={(e) => props.onClose(e)}
                 >
                     <div className={classes.searchField}>{/* 検索機能は余裕があれば実装する。*/}
                         <TextInput
