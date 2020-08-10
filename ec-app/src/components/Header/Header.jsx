@@ -5,7 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { useDispatch, useSelector } from "react-redux";
 import { getIsSignedIn } from "../../reducks/users/selectors";
 import logo from "../../assets/img/icons/logo.png";
-import { HeaderMenu } from "./index";
+import { HeaderMenu, ClosableDlawer } from "./index";
 import { push } from "connected-react-router"
 
 const useStyles = makeStyles(() =>
@@ -36,15 +36,18 @@ const Header = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const isSignedIn = getIsSignedIn(selector);
+    const [open, SetOpen] = useState(false);
 
-    const [sideBarOpen, setSideBarOpen] = useState(false);
-
-    const handleDrawerToggle = useCallback((event, isOpen) => {
+    const handleDrawerToggle = useCallback((event) => {
         if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-            return;
+            return false;
         }
-        setSideBarOpen(isOpen)
-    }, [setSideBarOpen]);
+        if (event.target.type === "text") {/* 検索フォームで動いてしまうため */
+            return false;
+        }
+        SetOpen(!open)
+    }, [SetOpen, open]);
+
 
     return (
         <div className={classes.root}>
@@ -58,6 +61,7 @@ const Header = () => {
                     )}
                 </Toolbar>
             </AppBar>
+            <ClosableDlawer open={open} onClose={handleDrawerToggle} />
         </div>
     );
 }
