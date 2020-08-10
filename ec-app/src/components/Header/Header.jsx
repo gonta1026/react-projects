@@ -39,15 +39,20 @@ const Header = () => {
     const [open, SetOpen] = useState(false);
 
     const handleDrawerToggle = useCallback((event) => {
-        if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+        if (
+            (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) ||
+            (event.target && event.target.type === "text")/* 検索フォームでもdrawerが反応してしまうため */
+        ) {
             return false;
         }
-        if (event.target.type === "text") {/* 検索フォームで動いてしまうため */
-            return false;
-        }
-        SetOpen(!open)
+        SetOpen(!open);
     }, [SetOpen, open]);
 
+
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const inputSearchKeyword = useCallback((event) => {
+        setSearchKeyword(event.target.value)
+    }, [searchKeyword])
 
     return (
         <div className={classes.root}>
@@ -61,7 +66,7 @@ const Header = () => {
                     )}
                 </Toolbar>
             </AppBar>
-            <ClosableDlawer open={open} onClose={handleDrawerToggle} />
+            <ClosableDlawer open={open} onClose={handleDrawerToggle} inputSearchKeyword={inputSearchKeyword} searchKeyword={searchKeyword} setSearchKeyword={setSearchKeyword} />
         </div>
     );
 }
