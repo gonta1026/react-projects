@@ -17,7 +17,7 @@ import HistoryIcon from '@material-ui/icons/History';
 import PersonIcon from '@material-ui/icons/Person';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { db } from "../../firebase";
-// import { getUserRole } from "../../reducks/users/selectors";
+
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -42,18 +42,20 @@ const useStyles = makeStyles((theme) =>
 
 const ClosableDrawer = (props) => {
     const { container } = props;
-    console.log(props.open)
-    console.log({ container })
     const classes = useStyles();
     const dispatch = useDispatch();
     const selector = useSelector(state => state);
 
     const selectMenu = (event, path) => {
         dispatch(push(path));
+        props.setSearchKeyword("");
         props.onClose(event);
     };
 
-    const [searchKeyword, setSearchKeyword] = useState("");
+    const drawerCloseAtSignOut = () => {
+        props.setSearchKeyword("");
+        props.onClose(false);
+    }
 
     const menus = [
         { func: selectMenu, label: "商品登録", icon: <AddCircleIcon />, id: "register", value: "/product/edit" },
@@ -61,10 +63,6 @@ const ClosableDrawer = (props) => {
         { func: selectMenu, label: "プロフィール", icon: <PersonIcon />, id: "profile", value: "/user/mypage" },
     ];
 
-    const inputSearchKeyword = useCallback((event) => {
-        console.log(event.target.value)
-        setSearchKeyword(event.target.value)
-    }, [searchKeyword])
 
     return (
         <nav className={classes.drawer} aria-label="mailbox folders">
@@ -85,10 +83,10 @@ const ClosableDrawer = (props) => {
                     onClose={(e) => props.onClose(e, false)}
                     onKeyDown={(e) => props.onClose(e, false)}
                 >
-                    <div className={classes.searchField}>{/* 検索機能は余裕があれば実装する。 */}
+                    <div className={classes.searchField}>{/* 検索機能は余裕があれば実装する。*/}
                         <TextInput
                             fullWidth={false} label={"キーワードを入力"} multiline={false}
-                            onChange={inputSearchKeyword} required={false} rows={1} value={searchKeyword} type={"text"}
+                            onChange={props.inputSearchKeyword} required={false} rows={1} value={props.searchKeyword} type={"text"}
                         />
                         <IconButton>
                             <SearchIcon />
@@ -104,7 +102,11 @@ const ClosableDrawer = (props) => {
                         ))
 
                         }
-                        <ListItem button key="logout" onClick={() => dispatch(signOut())}>
+                        <ListItem button key="logout" onClick={() => {
+                            dispatch(signOut());
+                            drawerCloseAtSignOut();
+                        }
+                        }>
                             <ListItemIcon>
                                 <ExitToAppIcon />
                             </ListItemIcon>
@@ -115,7 +117,7 @@ const ClosableDrawer = (props) => {
 
                 </div>
             </Drawer>
-        </nav>
+        </nav >
     );
 }
 
