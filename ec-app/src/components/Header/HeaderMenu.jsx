@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router"
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-import { db } from '../../firebase'
+// import { db } from '../../firebase'
 import MenuIcon from "@material-ui/icons/Menu";
 
 const HeaderMenu = (props) => {
@@ -14,7 +14,7 @@ const HeaderMenu = (props) => {
     return (
         <>
             <IconButton>
-                <Badge color="secondary" badgeContent={10}>
+                <Badge color="secondary">
                     <ShoppingCartIcon />
                 </Badge>
             </IconButton>
@@ -26,6 +26,7 @@ const HeaderMenu = (props) => {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 color="inherit"
+                onClick={(event) => props.handleDrawerToggle(event)}
             >
                 <MenuIcon />
             </IconButton>

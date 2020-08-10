@@ -1,7 +1,7 @@
 import * as Actions from './actions';
-import {initialState} from '../store/initialState';
+import { initialState } from '../store/initialState';
 
-export const UsersReducer = (state = initialState.users, action)  => {
+export const UsersReducer = (state = initialState.users, action) => {
     console.log("reducers");
     console.log(state)
     console.log(action)
@@ -15,6 +15,7 @@ export const UsersReducer = (state = initialState.users, action)  => {
         case Actions.SIGN_OUT:
             console.log("SIGN_OUTです！")
             return {
+                ...state,
                 ...action.payload
             };
         default:
