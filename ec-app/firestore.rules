@@ -1,16 +1,76 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
-    match /users/{userId} {
-      allow read: if request.auth.uid != null;
-      allow create;
-      allow update: if request.auth.uid == userId;
-      allow delete: if request.auth.uid == userId;
-    }
+    match /databases/{database}/documents {
+
+        function isAnyAuthnication() {//ログインしているかを確認
+            return request.auth != null;
+        }
+
+        function isUserAuthenticated(userId){//ログインしている、かつログインしているユーザーと参照しているユーザーのidが同じか、
+            return isAnyAuthnication() && request.auth.uid == userId;
+        }
+
+        // request.resource.dataを返す関数
+        function inputData(key) {
+            return request.resource.data[key];
+        }
+
+        // フィールドの値がstringの場合のバリデーション関数
+        function validateString(text, min, max) {
+            return text is string && min <= text.size() && text.size() <= max;
+        }
+
+        // フィールドの値がintの場合のバリデーション関数
+        function validateInt(num, min, max) {
+        return num is int && min <= num && num <= max;
+        }
+
+        match /users/{userId} {
+            allow get: if isAnyAuthnication();
+            allow list: if isAnyAuthnication();
+            allow create: 
+                if isUserAuthenticated(userId) 
+                //username
+                && inputData("username") != null 
+                && inputData("username") is string 
+                && validateString(inputData("username"), 1, 20)
+                // email
+                && validateString(inputData("email"), 1, 20)
+                && inputData("email") == request.auth.token.email
+                && inputData("email").matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")//正直あまり意味が分かっていないが動作はする模様。
+                // password
+                && validateString(inputData("password"), 6, 20)
+                //created_at
+                && inputData("created_at") == request.time;//firebase.firestore.FieldValue.serverTimestamp();を使えば同じになる。nowを使うと一致しないのでエラーになる。
+            allow update: 
+                if isUserAuthenticated(userId)
+                && inputData("updated_at") == request.time;
+            allow delete:
+                if isUserAuthenticated(userId)
+            match /cart/{cartId} {
+                allow get: 
+                    if isAnyAuthnication();
+                allow list:
+                    if isAnyAuthnication();
+                allow create;
+                allow update:
+                    if isUserAuthenticated(userId);
+                allow delete:
+                    if isUserAuthenticated(userId);
+            }
+        }
     
-    match /products/{productId} {
-      allow read: if request.auth.uid != null;
-      allow write: if request.auth.uid != null;
+        match /products/{productId} {
+            allow get:
+                if isAnyAuthnication();
+            allow list:
+                if isAnyAuthnication();
+            allow create;
+                if isAnyAuthnication();
+            allow update: 
+                if isAnyAuthnication();
+            allow delete:
+                if isAnyAuthnication();
+        }
     }
-  }
 }
