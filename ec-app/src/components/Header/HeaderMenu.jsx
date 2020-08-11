@@ -5,16 +5,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router"
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
-// import { db } from '../../firebase'
+import { getProductsInCart } from "../../reducks/users/selectors";
 import MenuIcon from "@material-ui/icons/Menu";
-
+import { getUserId } from "../../reducks/users/selectors";
+import { fetchProductInCart } from "../../reducks/users/operations";
+import { db } from "../../firebase";
 const HeaderMenu = (props) => {
     const dispatch = useDispatch();
+    const selector = useSelector((state) => state);
+    const uid = getUserId(selector);
+    const productInCart = getProductsInCart(selector);
 
+    useEffect(() => {
+        const unsubscribe = db.collection("users").doc(uid).collection("cart")
+            .onSnapshot(snapshots => {
+                snapshots.docChanges().forEach(change => {
+                    const product = change.doc.data();
+                    const changeType = change.type;
+                    switch (changeType) {
+                        case "added":
+                            productInCart.push(product);
+                            break;
+                        case "modified":
+                            const index = productInCart.findIndex(product => product.id === change.doc.id);
+                            productInCart[index] = product;
+                            break;
+                        case "removed":
+                            productInCart.filter(product => product.id !== change.doc.id)
+                            break;
+                        default:
+                            break;
+                    }
+                })
+                dispatch(fetchProductInCart(productInCart))
+            });
+        return () => unsubscribe();
+    }, [])
     return (
         <>
             <IconButton>
-                <Badge color="secondary">
+                <Badge color="secondary" badgeContent={productInCart.length}>
                     <ShoppingCartIcon />
                 </Badge>
             </IconButton>

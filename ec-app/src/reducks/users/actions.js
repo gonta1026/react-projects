@@ -24,3 +24,11 @@ export const signOutAction = () => {
     }
 }
 
+export const FETCH_PRODUCT_IN_CART = "FETCH_PRODUCT_IN_CART";
+export const fetchProductInCartAction = (products) => {
+    return {
+        type: "FETCH_PRODUCT_IN_CART",
+        payload: products
+    }
+}
+

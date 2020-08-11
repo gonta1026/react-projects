@@ -10,11 +10,14 @@ const useStyles = makeStyles({
         height: 48,
         width: 48
     }
-})
+});
+
 
 const SizeTable = (props) => {
     const classes = useStyles()
     const sizes = props.sizes;
+    const product = props.product
+
     return (
         <TableContainer>
             <Table aria-label="simple table">
@@ -26,7 +29,7 @@ const SizeTable = (props) => {
                                 <TableCell>残り{item.quantity}点</TableCell>
                                 <TableCell className={classes.iconCell}>
                                     {item.quantity > 0 ? (
-                                        <IconButton
+                                        <IconButton onClick={() => { props.addProduct(item.size) }}
                                             className={classes.iconCell}
                                         >
                                             <ShoppingCart />

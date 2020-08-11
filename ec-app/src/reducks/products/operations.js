@@ -25,7 +25,6 @@ export const deleteProduct = (productId) => {
     return async (dispatch, getState) => {
         productRef.doc(productId).delete()
             .then(() => {
-                console.log(getState)
                 const prevProducts = getState().products.list
                 const nextProducts = prevProducts.filter(product => product.id !== productId);
                 dispatch(deleteProductAction(nextProducts));
@@ -35,7 +34,7 @@ export const deleteProduct = (productId) => {
 
 export const saveProduct = (id, name, description, category, price, gender, images, sizes) => {
     return async (dispatch) => {
-        const timestamp = FirebaseTimeStamp.now();
+        const timestamp = FirebaseTimeStamp;
 
         const data = {
             name,

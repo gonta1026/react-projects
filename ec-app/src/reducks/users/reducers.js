@@ -18,6 +18,12 @@ export const UsersReducer = (state = initialState.users, action) => {
                 ...state,
                 ...action.payload
             };
+        case Actions.FETCH_PRODUCT_IN_CART:
+            console.log("FETCH_PRODUCT_IN_CART")
+            return {
+                ...state,
+                cart: [...action.payload]
+            };
         default:
             console.log("defaultだー")
             return state
