@@ -82,11 +82,12 @@ const ProductCard = (props) => {
     };
 
     return (
-        <Card className={classes.root}>
+        <Card className={classes.root}
+        >
             <CardMedia
                 className={classes.media}
                 image={images[0].path}
-
+                onClick={() => dispatch(push('/product/' + props.id))}
                 title=""
             />
             <CardContent className={classes.content}>
@@ -109,13 +110,14 @@ const ProductCard = (props) => {
                     onClose={handleClose}
                 >
 
-                    <MenuItem onClick={() => {
-                        dispatch(push('/product/edit/' + props.id))
-                        handleClose();
-                    }}
+                    <MenuItem
+                        onClick={(e) => {
+                            dispatch(push('/product/edit/' + props.id))
+                            handleClose();
+                        }}
                     >編集する</MenuItem>
 
-                    <MenuItem onClick={() => {
+                    <MenuItem onClick={(e) => {
                         dispatch(deleteProduct(props.id))
                         handleClose();
                     }}
