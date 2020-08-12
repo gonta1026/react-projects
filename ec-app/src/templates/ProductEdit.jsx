@@ -90,7 +90,8 @@ const ProductEdit = () => {
                 <div className="center">
                     <PrimaryButton
                         label={"商品情報を登録"}
-                        onClick={() => dispatch(saveProduct(id, name, description, category, price, gender, images, sizes))} />
+                        onClick={() => dispatch(saveProduct(id, name, description, category, price, gender, images, sizes))}
+                        color={"#60EEFF"} hoverColor={"#C2EEFF"} />
                 </div>
             </div>
         </section>

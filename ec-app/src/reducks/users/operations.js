@@ -39,7 +39,9 @@ export const addProductToCart = (product, selectedSize) => {
   return async (dispatch, getState) => {
     const uid = getState().users.uid;
     const cartRef = db.collection("users").doc(uid).collection("cart").doc();
+    const cartId = cartRef.id;
     const addedProduct = {
+      cartId,
       category,
       description,
       gender,

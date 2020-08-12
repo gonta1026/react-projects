@@ -9,7 +9,7 @@ import IconButton from "@material-ui/core/IconButton";
 import { useSelector } from "react-redux";
 import { getUserId } from "../../reducks/users/selectors";
 import { db } from "../../firebase/index"
-
+import NoImage from '../../assets/img/src/no_image.png'
 const useStyles = makeStyles((theme) => ({
     list: {
         height: 128
@@ -28,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
 const CartListItem = (props) => {
     const classes = useStyles();
     const selector = useSelector(state => state);
-
-    const image = props.product.images[0].path;
+    const image = props.product.images.length ? props.product.images[0].path : NoImage;
     const price = props.product.price.toLocaleString();
 
     const removeProductFromCart = (id) => {
