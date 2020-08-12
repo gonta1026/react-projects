@@ -5,25 +5,24 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles({
-    formControl: {
-        marginBottom: 16,
-        minWidth: 120,
-        width: "100%"
-    }
-});
+const SelectBox = ({ label, value, required, select, options, }) => {
 
-const SelectBox = (props) => {
-    const classes = useStyles();
-    console.log(props)
+    const classes = (makeStyles({
+        formControl: {
+            marginBottom: 16,
+            minWidth: 120,
+            width: "100%"
+        }
+    }))();
+
     return (
         <FormControl className={classes.formControl}>
-            <InputLabel >{props.label}</InputLabel>
+            <InputLabel >{label}</InputLabel>
             <Select
-                value={props.value} required={props.required}
-                onChange={(e) => props.select(e.target.value)}
+                value={value} required={required}
+                onChange={(e) => select(e.target.value)}
             >
-                {props.options.map((option) => {
+                {options.map((option) => {
                     return <MenuItem key={option.id} value={option.id}>{option.name}</MenuItem>
                 })}
             </Select>

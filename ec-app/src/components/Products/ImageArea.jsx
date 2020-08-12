@@ -1,24 +1,24 @@
-import React, {useCallback} from "react";
-import {storage} from "../../firebase/index";
-import {makeStyles} from "@material-ui/styles";
+import React, { useCallback } from "react";
+import { storage } from "../../firebase/index";
+import { makeStyles } from "@material-ui/styles";
 import IconButton from "@material-ui/core/IconButton";
 import AddPhotoAlternateIcon from "@material-ui/icons/AddPhotoAlternate";
 import PhotoFilterIcon from "@material-ui/icons/PhotoFilter";
-import {useDispatch} from "react-redux";
-import {ImagePreview} from "./index";
+import { useDispatch } from "react-redux";
+import { ImagePreview } from "./index";
 
-const useStyles = makeStyles({
-    icon: {
-        marginRight: 8,
-        height: 48,
-        width: 48,
-    },
-});
 
-const ImageArea = (props) => {
-    const classes = useStyles();
+const ImageArea = ({ images, setImages }) => {
+
+    const classes = (makeStyles({
+        icon: {
+            marginRight: 8,
+            height: 48,
+            width: 48,
+        },
+    }))();
+
     const dispatch = useDispatch();
-    const images = props.images;
 
     const deleteImage = useCallback(
         async (id) => {
@@ -27,7 +27,7 @@ const ImageArea = (props) => {
                 return false;
             } else {
                 const newImages = images.filter((image) => image.id !== id);
-                props.setImages(newImages);
+                setImages(newImages);
                 return storage.ref("images").child(id).delete();
             }
         },
@@ -38,7 +38,7 @@ const ImageArea = (props) => {
         (event) => {
             // dispatch(showLoadingAction("uploading..."))
             const file = event.target.files;
-            let blob = new Blob(file, {type: "image/jpeg"});
+            let blob = new Blob(file, { type: "image/jpeg" });
 
             // Generate random 16 digits strings
             const S = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -54,13 +54,13 @@ const ImageArea = (props) => {
                 .then(() => {
                     // Handle successful uploads on complete
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                        const newImage = {id: fileName, path: downloadURL};
-                        props.setImages((prevState) => [...prevState, newImage]);
+                        const newImage = { id: fileName, path: downloadURL };
+                        setImages((prevState) => [...prevState, newImage]);
                     });
                 })
-                .catch(() => {});
+                .catch(() => { });
         },
-        [props.setImages]
+        [setImages]
     );
 
     return (

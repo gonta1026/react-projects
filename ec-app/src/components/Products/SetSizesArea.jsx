@@ -13,22 +13,22 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles({
-    checkIcon: {
-        float: 'right'
-    },
-    iconCell: {
-        padding: 0,
-        height: 48,
-        width: 48
-    },
-    width: {
-        width: "50%"
-    }
-})
 
-const SetSizesArea = (props) => {
-    const classes = useStyles()
+const SetSizesArea = ({ sizes, setSizes }) => {
+
+    const classes = (makeStyles({
+        checkIcon: {
+            float: 'right'
+        },
+        iconCell: {
+            padding: 0,
+            height: 48,
+            width: 48
+        },
+        width: {
+            width: "50%"
+        }
+    }))();
 
     const [index, setIndex] = useState(0),
         [size, setSize] = useState(""),
@@ -47,15 +47,15 @@ const SetSizesArea = (props) => {
             // Required input is blank
             return false
         } else {
-            if (index === props.sizes.length) {
-                props.setSizes(prevState => [...prevState, { size: size, quantity: quantity }]);
+            if (index === sizes.length) {
+                setSizes(prevState => [...prevState, { size: size, quantity: quantity }]);
                 setIndex(index + 1);
                 setSize("");
                 setQuantity(0)
             } else {
-                const newSizes = props.sizes;
+                const newSizes = sizes;
                 newSizes[index] = { size: size, quantity: quantity };
-                props.setSizes(newSizes);
+                setSizes(newSizes);
                 setIndex(newSizes.length);
                 setSize("");
                 setQuantity(0);
@@ -70,13 +70,13 @@ const SetSizesArea = (props) => {
     }
 
     const deleteSize = (deleteIndex) => {
-        const newSizes = props.sizes.filter((item, index) => index !== deleteIndex)
-        props.setSizes(newSizes);
+        const newSizes = sizes.filter((item, index) => index !== deleteIndex)
+        setSizes(newSizes);
     }
 
     const memoIndex = useMemo(() => {
-        setIndex(props.sizes.length)
-    }, [props.sizes.length])
+        setIndex(sizes.length)
+    }, [sizes.length])
 
     return (
         <div aria-label="サイズ展開">
@@ -91,8 +91,8 @@ const SetSizesArea = (props) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {props.sizes.length > 0 && (
-                            props.sizes.map((item, index) => (
+                        {sizes.length > 0 && (
+                            sizes.map((item, index) => (
                                 <TableRow key={item.size}>
                                     <TableCell component="th" scope="row">{item.size}</TableCell>
                                     <TableCell>{item.quantity}</TableCell>

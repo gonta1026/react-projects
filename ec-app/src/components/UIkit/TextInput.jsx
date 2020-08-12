@@ -1,19 +1,19 @@
 import React from "react";
 import TextField from "@material-ui/core/TextField";
 
-const TextInput = (props) => {
+const TextInput = ({ className, fullNmae, fullWidth, label, multiline, onChange, required, rows, type, value }) => {
   return (
     <TextField
       margin={"dense"}
-      fullWidth={props.fullWidth}
-      label={props.label}
-      multiline={props.multiline}
-      required={props.required}
-      rows={props.rows}
-      type={props.type}
-      onChange={props.onChange}
-      value={props.value}
-      className={props.className}
+      className={className}
+      fullWidth={fullWidth}
+      label={label}
+      multiline={multiline}
+      onChange={onChange}
+      required={required}
+      rows={rows}
+      type={type}
+      value={value}
     />
   )
 }

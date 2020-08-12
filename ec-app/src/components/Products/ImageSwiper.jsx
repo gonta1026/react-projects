@@ -3,7 +3,7 @@ import Swiper from 'react-id-swiper';
 import NoImage from '../../assets/img/src/no_image.png'
 import 'swiper/css/swiper.css'
 
-const ImageSwiper = (props) => {
+const ImageSwiper = ({ images }) => {
     const [params] = React.useState({
         pagination: {
             el: '.swiper-pagination',
@@ -18,8 +18,6 @@ const ImageSwiper = (props) => {
         loop: false,
         spaceBetween: 30
     })
-
-    const images = props.images
 
     return (
         <Swiper {...params}>

@@ -4,19 +4,17 @@ import { Table, TableCell, TableRow, TableBody, IconButton, TableContainer } fro
 import { ShoppingCart, FavoriteBorder } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles({
-    iconCell: {
-        padding: 0,
-        height: 48,
-        width: 48
-    }
-});
 
 
-const SizeTable = (props) => {
-    const classes = useStyles()
-    const sizes = props.sizes;
-    const product = props.product
+const SizeTable = ({ sizes, product, addProduct }) => {
+
+    const classes = (makeStyles({
+        iconCell: {
+            padding: 0,
+            height: 48,
+            width: 48
+        }
+    }))();
 
     return (
         <TableContainer>
@@ -29,7 +27,7 @@ const SizeTable = (props) => {
                                 <TableCell>残り{item.quantity}点</TableCell>
                                 <TableCell className={classes.iconCell}>
                                     {item.quantity > 0 ? (
-                                        <IconButton onClick={() => { props.addProduct(item.size) }}
+                                        <IconButton onClick={() => { addProduct(item.size) }}
                                             className={classes.iconCell}
                                         >
                                             <ShoppingCart />

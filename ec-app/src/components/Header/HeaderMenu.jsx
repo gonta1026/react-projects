@@ -10,7 +10,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { getUserId } from "../../reducks/users/selectors";
 import { fetchProductInCart } from "../../reducks/users/operations";
 import { db } from "../../firebase";
-const HeaderMenu = (props) => {
+const HeaderMenu = ({ handleDrawerToggle }) => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const uid = getUserId(selector);
@@ -57,7 +57,7 @@ const HeaderMenu = (props) => {
                 aria-controls="menu-appbar"
                 aria-haspopup="true"
                 color="inherit"
-                onClick={(event) => props.handleDrawerToggle(event)}
+                onClick={(event) => handleDrawerToggle(event)}
             >
                 <MenuIcon />
             </IconButton>

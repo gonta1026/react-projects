@@ -4,8 +4,7 @@ import { makeStyles } from "@material-ui/styles";
 import { createStyles } from "@material-ui/core";
 
 
-const PrimaryButton = (props) => {
-    const { color, hoverColor } = props;
+const PrimaryButton = ({ color, hoverColor, label, onClick }) => {//
     const classes = (makeStyles((theme) =>
         createStyles({
             "button": {
@@ -23,8 +22,8 @@ const PrimaryButton = (props) => {
     ))();
 
     return (
-        <Button className={classes.button} variant="contained" onClick={() => props.onClick()}>
-            {props.label}
+        <Button className={classes.button} variant="contained" onClick={() => onClick()}>
+            {label}
         </Button>
     );
 }
