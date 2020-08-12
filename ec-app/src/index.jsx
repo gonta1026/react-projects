@@ -13,7 +13,7 @@ export const getStore = store(history);
 ReactDOM.render(
     <Provider store={getStore}>
         <ConnectedRouter history={history}>
-            <MuiThemeProvider theme={theme}>
+            <MuiThemeProvider theme={theme}>{/* material-uiでテーマを使う時にimoportする必要がある */}
                 <App />
             </MuiThemeProvider>
         </ConnectedRouter>

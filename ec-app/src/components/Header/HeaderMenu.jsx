@@ -14,7 +14,7 @@ const HeaderMenu = (props) => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const uid = getUserId(selector);
-    const productInCart = getProductsInCart(selector);
+    let productInCart = getProductsInCart(selector);
 
     useEffect(() => {
         const unsubscribe = db.collection("users").doc(uid).collection("cart")
@@ -24,14 +24,15 @@ const HeaderMenu = (props) => {
                     const changeType = change.type;
                     switch (changeType) {
                         case "added":
+                            console.log("added!!!");
                             productInCart.push(product);
                             break;
                         case "modified":
                             const index = productInCart.findIndex(product => product.id === change.doc.id);
                             productInCart[index] = product;
                             break;
-                        case "removed":
-                            productInCart.filter(product => product.id !== change.doc.id)
+                        case 'removed':
+                            productInCart = productInCart.filter(product => product.cartId !== change.doc.id);
                             break;
                         default:
                             break;
@@ -43,7 +44,7 @@ const HeaderMenu = (props) => {
     }, [])
     return (
         <>
-            <IconButton>
+            <IconButton onClick={(() => dispatch(push("/cart")))}>
                 <Badge color="secondary" badgeContent={productInCart.length}>
                     <ShoppingCartIcon />
                 </Badge>
