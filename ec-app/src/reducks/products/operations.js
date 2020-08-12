@@ -34,7 +34,6 @@ export const deleteProduct = (productId) => {
 
 export const saveProduct = (id, name, description, category, price, gender, images, sizes) => {
     return async (dispatch) => {
-        const timestamp = FirebaseTimeStamp;
 
         const data = {
             name,
@@ -42,16 +41,16 @@ export const saveProduct = (id, name, description, category, price, gender, imag
             category,
             gender,
             images,
-            sizes,
+            sizes: sizes,
             price: parseInt(price, 10),
-            updated_at: timestamp,
+            updated_at: FirebaseTimeStamp(),
         };
 
         if (id === "") {
             const ref = productRef.doc();
             id = ref.id;
             data.id = id;
-            data.created_at = timestamp;
+            data.created_at = FirebaseTimeStamp();
         }
 
         productRef.doc(id).set(data, { merge: true })

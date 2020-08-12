@@ -47,13 +47,10 @@ export const addProductToCart = (product, selectedSize) => {
       images,
       name,
       price,
-      sizes: {
-        quantity: 1,
-        size: selectedSize
-      }
+      quantity: 1,
+      size: selectedSize
     }
     await cartRef.set(addedProduct);
-    // dispatch(addProductToCartAction(addedProduct))
     dispatch(push('/'))
   }
 }
@@ -107,13 +104,12 @@ export const signUp = (username, email, password, confirmPassword) => {
 
         if (user) {
           const uid = user.uid;
-          const timeStamp = FirebaseTimeStamp;
           const initialUserData = {
-            created_at: timeStamp,
+            created_at: FirebaseTimeStamp(),
             email: email,
             username: username,
             uid: uid,
-            updated_at: timeStamp,
+            updated_at: FirebaseTimeStamp(),
             role: "customer"
           }
           db.collection("users").doc(uid).set(initialUserData)

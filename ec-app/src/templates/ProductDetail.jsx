@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import ImageSwiper from "../components/Products/ImageSwiper";
 import { makeStyles } from "@material-ui/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { db, FirebaseTimeStamp } from "../firebase";
+import { db } from "../firebase";
 import { SizeTable } from "../components/Products";
 import { addProductToCart } from "../reducks/users/operations";
 import { returnCodeToBr } from "../functions/common";
@@ -55,7 +55,6 @@ const ProductDetail = () => {
     }, [])
 
     const addProduct = useCallback((selectedSize) => {
-        const timeStamp = FirebaseTimeStamp;
         dispatch(addProductToCart(product, selectedSize))
     }, [product]);
 
