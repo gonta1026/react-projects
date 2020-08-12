@@ -10,23 +10,23 @@ import { useSelector } from "react-redux";
 import { getUserId } from "../../reducks/users/selectors";
 import { db } from "../../firebase/index"
 import NoImage from '../../assets/img/src/no_image.png'
-const useStyles = makeStyles((theme) => ({
-    list: {
-        height: 128
-    },
-    image: {
-        objectFit: 'cover',
-        margin: 16,
-        height: 96,
-        width: 96
-    },
-    text: {
-        width: '100%'
-    }
-}))
 
 const CartListItem = (props) => {
-    const classes = useStyles();
+    const classes = (makeStyles((theme) => ({
+        list: {
+            height: 128
+        },
+        image: {
+            objectFit: 'cover',
+            margin: 16,
+            height: 96,
+            width: 96
+        },
+        text: {
+            width: '100%'
+        }
+    })))()
+
     const selector = useSelector(state => state);
     const image = props.product.images.length ? props.product.images[0].path : NoImage;
     const price = props.product.price.toLocaleString();

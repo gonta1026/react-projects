@@ -5,17 +5,16 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles({
-    formControl: {
-        marginBottom: 16,
-        minWidth: 120,
-        width: "100%"
-    }
-});
-
 const SelectBox = (props) => {
-    const classes = useStyles();
-    console.log(props)
+
+    const classes = (makeStyles({
+        formControl: {
+            marginBottom: 16,
+            minWidth: 120,
+            width: "100%"
+        }
+    }))();
+
     return (
         <FormControl className={classes.formControl}>
             <InputLabel >{props.label}</InputLabel>

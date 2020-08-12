@@ -13,22 +13,22 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles({
-    checkIcon: {
-        float: 'right'
-    },
-    iconCell: {
-        padding: 0,
-        height: 48,
-        width: 48
-    },
-    width: {
-        width: "50%"
-    }
-})
 
 const SetSizesArea = (props) => {
-    const classes = useStyles()
+
+    const classes = (makeStyles({
+        checkIcon: {
+            float: 'right'
+        },
+        iconCell: {
+            padding: 0,
+            height: 48,
+            width: 48
+        },
+        width: {
+            width: "50%"
+        }
+    }))();
 
     const [index, setIndex] = useState(0),
         [size, setSize] = useState(""),

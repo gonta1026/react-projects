@@ -4,17 +4,18 @@ import { Table, TableCell, TableRow, TableBody, IconButton, TableContainer } fro
 import { ShoppingCart, FavoriteBorder } from '@material-ui/icons';
 import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles({
-    iconCell: {
-        padding: 0,
-        height: 48,
-        width: 48
-    }
-});
 
 
 const SizeTable = (props) => {
-    const classes = useStyles()
+
+    const classes = (makeStyles({
+        iconCell: {
+            padding: 0,
+            height: 48,
+            width: 48
+        }
+    }))();
+
     const sizes = props.sizes;
     const product = props.product
 

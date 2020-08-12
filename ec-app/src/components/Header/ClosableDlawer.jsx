@@ -19,30 +19,30 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { db } from "../../firebase";
 
 
-const useStyles = makeStyles((theme) =>
-    createStyles({
-        drawer: {
-            [theme.breakpoints.up('sm')]: {
-                width: 256,
-                flexShrink: 0,
-            }
-        },
-        // necessary for content to be below app bar
-        toolbar: theme.mixins.toolbar,
-        drawerPaper: {
-            width: 256,
-        },
-        searchField: {
-            alignItems: 'center',
-            display: 'flex',
-            marginLeft: 32
-        }
-    }),
-);
-
 const ClosableDrawer = (props) => {
+
+    const classes = (makeStyles((theme) =>
+        createStyles({
+            drawer: {
+                [theme.breakpoints.up('sm')]: {
+                    width: 256,
+                    flexShrink: 0,
+                }
+            },
+            // necessary for content to be below app bar
+            toolbar: theme.mixins.toolbar,
+            drawerPaper: {
+                width: 256,
+            },
+            searchField: {
+                alignItems: 'center',
+                display: 'flex',
+                marginLeft: 32
+            }
+        }),
+    ))();
+
     const { container } = props;
-    const classes = useStyles();
     const dispatch = useDispatch();
     const selector = useSelector(state => state);
 

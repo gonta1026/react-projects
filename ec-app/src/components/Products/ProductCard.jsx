@@ -13,61 +13,59 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { deleteProduct } from "../../reducks/products/operations"
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        [theme.breakpoints.down('sm')]: {
-            margin: 8,
-            width: 'calc(50% - 16px)',
-        },
-        [theme.breakpoints.up('md')]: {
-            margin: 16,
-            width: 'calc(33.3333% - 32px)',
-        }
-    },
-    content: {
-        display: 'flex',
-        padding: '16 8',
-        textAlign: 'left',
-        '&:last-child': {
-            paddingBottom: 16
-        }
-    },
-    icon: {
-        marginRight: 0,
-        marginLeft: 'auto'
-    },
-    media: {
-        height: 0,
-        paddingTop: '100%'
-    },
-    price: {
-        color: theme.palette.secondary.dark,
-        fontSize: 16
-
-    },
-    productName: {
-        boxOrient: 'vertical',
-        display: '-webkit-box',
-        fontSize: 14,
-        lineHeight: '18px',
-        overflow: 'hidden',
-        [theme.breakpoints.down('sm')]: {
-            height: 36,
-            lineClamp: 2,
-        },
-        [theme.breakpoints.up('md')]: {
-            height: 18,
-            lineClamp: 1,
-        }
-    }
-}));
 
 const ProductCard = (props) => {
-    const classes = useStyles();
-    const dispatch = useDispatch()
-    // const selector = useSelector(state => state);
-    // const isAdministrator = (userRole === "administrator");
 
+    const classes = (makeStyles((theme) => ({
+        root: {
+            [theme.breakpoints.down('sm')]: {
+                margin: 8,
+                width: 'calc(50% - 16px)',
+            },
+            [theme.breakpoints.up('md')]: {
+                margin: 16,
+                width: 'calc(33.3333% - 32px)',
+            }
+        },
+        content: {
+            display: 'flex',
+            padding: '16 8',
+            textAlign: 'left',
+            '&:last-child': {
+                paddingBottom: 16
+            }
+        },
+        icon: {
+            marginRight: 0,
+            marginLeft: 'auto'
+        },
+        media: {
+            height: 0,
+            paddingTop: '100%'
+        },
+        price: {
+            color: theme.palette.secondary.dark,
+            fontSize: 16
+
+        },
+        productName: {
+            boxOrient: 'vertical',
+            display: '-webkit-box',
+            fontSize: 14,
+            lineHeight: '18px',
+            overflow: 'hidden',
+            [theme.breakpoints.down('sm')]: {
+                height: 36,
+                lineClamp: 2,
+            },
+            [theme.breakpoints.up('md')]: {
+                height: 18,
+                lineClamp: 1,
+            }
+        }
+    })))();
+
+    const dispatch = useDispatch()
     const images = (props.images.length > 0) ? props.images : [{ path: NoImage }]
     const price = props.price.toLocaleString();
 
