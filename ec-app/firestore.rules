@@ -2,6 +2,11 @@ rules_version = '2';
 service cloud.firestore {
     match /databases/{database}/documents {
     
+        // ドキュメントのパス生成関数
+        function documentPath(paths) {
+            return path([['databases', database, 'documents'].join('/'), paths.join('/')].join('/'));
+        }
+
         //ログインしているかを確認
         function isAnyAuthnication() {
             return request.auth != null;
@@ -27,11 +32,6 @@ service cloud.firestore {
             return resource.data[fieldName];
         }
 
-        // ドキュメントのパス生成関数
-        function documentPath(paths) {
-            return path([['databases', database, 'documents'].join('/'), paths.join('/')].join('/'));
-        }
-
         // フィールドの値がstringの場合のバリデーション関数
         function validateString(text, min, max) {
             return text is string && min <= text.size() && text.size() <= max;
@@ -47,28 +47,29 @@ service cloud.firestore {
             return incomingData(date) is timestamp && incomingData(date) == request.time;
         }
 
-        // インクリメントのチェック！（使い道として『postCount』『LikeCount』）
+        // インクリメントのチェック！（使い道として『postCount』『LikeCount』など）
         function isfieldIncremented(fieldName, value) {
             return (resource == null && incomingData(fieldName) == value)//投稿がない時、かつリクエストした値とincrementした値が等しいか
-                    || incomingData(fieldName) == existingDataField(fieldName) + value;//リクエストしたデータ == 元のデータにincrementした値が等しい。
+                || incomingData(fieldName) == existingDataField(fieldName) + value;//リクエストしたデータ == 元のデータにincrementした値が等しい。
         }
         
         // ディクリメントのチェック！
         function isfielddecremented(fieldName, value) {
             return !(resource == null && incomingData(fieldName) == value)//0の状態からの減算はだめ。
-                    || incomingData(fieldName) == existingDataField(fieldName) - value;
+                || incomingData(fieldName) == existingDataField(fieldName) - value;
         }
 
         // 更新して欲しくないものupdata時されて欲しくないものフィールドを指定
         function isNotUpdating(fieldName){
             return !(fieldName in request.resource.data)
-                    || incomingData(fieldName) == resource.data[fieldName];
+                || incomingData(fieldName) == resource.data[fieldName];
         }
 
         // 引数には許可したい配列のフィールドを入れる
         function writingToAllowedField(AllowedFields) {
             return AllowedFields.hasAll(request.resource.data.keys());
         }
+        
         // 商品の作成、更新時に使う
         function isproductFieldCheck() {
             return isAnyAuthnication()
@@ -93,6 +94,10 @@ service cloud.firestore {
                 && validateTimeStamp("updated_at");
         }
 
+        function addProductInCartData(productId) {
+            return get(/databases/$(database)/documents/products/$(productId)).data
+        }
+
         match /users/{userId} {
             allow get: if isUserAuthenticated(userId);
             allow list: if isUserAuthenticated(userId);
@@ -111,24 +116,26 @@ service cloud.firestore {
             allow delete;
 
             match /cart/{cartId} {
-                allow get: 
-                    if isUserAuthenticated(userId);
-                allow list:
-                    if isUserAuthenticated(userId);
+                allow get: if isAnyAuthnication();
+                allow list: if isAnyAuthnication();
                 allow create:
-                    if isUserAuthenticated(userId);
-                allow update:
-                    if isUserAuthenticated(userId);
-                allow delete:
-                    if isUserAuthenticated(userId);
+                    if isUserAuthenticated(userId)
+                    && addProductInCartData(incomingData("id")).category == incomingData("category")
+                    && addProductInCartData(incomingData("id")).id == incomingData("id")
+                    && addProductInCartData(incomingData("id")).description == incomingData("description")
+                    && addProductInCartData(incomingData("id")).gender == incomingData("gender")
+                    && addProductInCartData(incomingData("id")).images == incomingData("images")
+                    && addProductInCartData(incomingData("id")).name == incomingData("name")
+                    && addProductInCartData(incomingData("id")).price == incomingData("price")
+                    && 1 == incomingData("quantity");
+                allow update;
+                allow delete;
             }
         }
     
         match /products/{productId} {
-            allow get:
-                if isAnyAuthnication();
-            allow list:
-                if isAnyAuthnication();
+            allow get: if isAnyAuthnication();
+            allow list: if isAnyAuthnication();
             allow create: if isproductFieldCheck()
                 && validateTimeStamp("created_at");
             allow update: if isproductFieldCheck()
