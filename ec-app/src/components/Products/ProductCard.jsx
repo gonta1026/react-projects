@@ -14,7 +14,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { deleteProduct } from "../../reducks/products/operations"
 
 
-const ProductCard = (props) => {
+const ProductCard = ({ id, images, name, price }) => {
 
     const classes = (makeStyles((theme) => ({
         root: {
@@ -66,8 +66,8 @@ const ProductCard = (props) => {
     })))();
 
     const dispatch = useDispatch()
-    const images = (props.images.length > 0) ? props.images : [{ path: NoImage }]
-    const price = props.price.toLocaleString();
+    images = (images.length > 0) ? images : [{ path: NoImage }]
+    price = price.toLocaleString();
 
     const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -85,13 +85,13 @@ const ProductCard = (props) => {
             <CardMedia
                 className={classes.media}
                 image={images[0].path}
-                onClick={() => dispatch(push('/product/' + props.id))}
+                onClick={() => dispatch(push('/product/' + id))}
                 title=""
             />
             <CardContent className={classes.content}>
-                <div onClick={() => dispatch(push('/product/' + props.id))}>
+                <div onClick={() => dispatch(push('/product/' + id))}>
                     <Typography className={classes.productName} color="textSecondary" component="p">
-                        {props.name}
+                        {name}
                     </Typography>
                     <Typography className={classes.price} component="p">
                         ¥{price}
@@ -110,13 +110,13 @@ const ProductCard = (props) => {
 
                     <MenuItem
                         onClick={(e) => {
-                            dispatch(push('/product/edit/' + props.id))
+                            dispatch(push('/product/edit/' + id))
                             handleClose();
                         }}
                     >編集する</MenuItem>
 
                     <MenuItem onClick={(e) => {
-                        dispatch(deleteProduct(props.id))
+                        dispatch(deleteProduct(id))
                         handleClose();
                     }}
                     >削除する</MenuItem>

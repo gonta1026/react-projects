@@ -1,11 +1,11 @@
 import React from "react";
 import { useDispatch } from "react-redux";
 
-const ImagePreview = (props) => {
+const ImagePreview = ({ deleteImage, id, path }) => {
     return (
         <div className="p-media__thumb">
-            <p onClick={e => props.deleteImage(props.id)}>削除</p>
-            <img src={props.path} alt="プレビュー画像" />
+            <p onClick={e => deleteImage(id)}>削除</p>
+            <img src={path} alt="プレビュー画像" />
         </div>
     );
 }

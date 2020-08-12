@@ -8,7 +8,7 @@ import { useDispatch } from "react-redux";
 import { ImagePreview } from "./index";
 
 
-const ImageArea = (props) => {
+const ImageArea = ({ images, setImages }) => {
 
     const classes = (makeStyles({
         icon: {
@@ -19,7 +19,6 @@ const ImageArea = (props) => {
     }))();
 
     const dispatch = useDispatch();
-    const images = props.images;
 
     const deleteImage = useCallback(
         async (id) => {
@@ -28,7 +27,7 @@ const ImageArea = (props) => {
                 return false;
             } else {
                 const newImages = images.filter((image) => image.id !== id);
-                props.setImages(newImages);
+                setImages(newImages);
                 return storage.ref("images").child(id).delete();
             }
         },
@@ -56,12 +55,12 @@ const ImageArea = (props) => {
                     // Handle successful uploads on complete
                     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                         const newImage = { id: fileName, path: downloadURL };
-                        props.setImages((prevState) => [...prevState, newImage]);
+                        setImages((prevState) => [...prevState, newImage]);
                     });
                 })
                 .catch(() => { });
         },
-        [props.setImages]
+        [setImages]
     );
 
     return (

@@ -19,7 +19,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { db } from "../../firebase";
 
 
-const ClosableDrawer = (props) => {
+const ClosableDrawer = ({ container, inputSearchKeyword, setSearchKeyword, onClose, open, searchKeyword }) => {
 
     const classes = (makeStyles((theme) =>
         createStyles({
@@ -42,19 +42,18 @@ const ClosableDrawer = (props) => {
         }),
     ))();
 
-    const { container } = props;
     const dispatch = useDispatch();
     const selector = useSelector(state => state);
 
     const selectMenu = (event, path) => {
         dispatch(push(path));
-        props.setSearchKeyword("");
-        props.onClose(event);
+        setSearchKeyword("");
+        onClose(event);
     };
 
     const drawerCloseAtSignOut = () => {
-        props.setSearchKeyword("");
-        props.onClose(false);
+        setSearchKeyword("");
+        onClose(false);
     }
 
     const menus = [
@@ -67,11 +66,11 @@ const ClosableDrawer = (props) => {
     return (
         <nav className={classes.drawer} aria-label="mailbox folders">
             <Drawer
-                container={container}
+                // container={container}
                 variant="temporary"
                 anchor={"right"}
-                open={props.open}
-                onClose={(e) => props.onClose(e)}
+                open={open}
+                onClose={(e) => onClose(e)}
                 classes={{
                     paper: classes.drawerPaper,
                 }}
@@ -80,13 +79,13 @@ const ClosableDrawer = (props) => {
                 }}
             >
                 <div
-                    onClose={(e) => props.onClose(e)}
-                    onKeyDown={(e) => props.onClose(e)}
+                    onClose={(e) => onClose(e)}
+                    onKeyDown={(e) => onClose(e)}
                 >
                     <div className={classes.searchField}>{/* 検索機能は余裕があれば実装する。*/}
                         <TextInput
                             fullWidth={false} label={"キーワードを入力"} multiline={false}
-                            onChange={props.inputSearchKeyword} required={false} rows={1} value={props.searchKeyword} type={"text"}
+                            onChange={inputSearchKeyword} required={false} rows={1} value={searchKeyword} type={"text"}
                         />
                         <IconButton>
                             <SearchIcon />

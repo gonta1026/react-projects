@@ -11,7 +11,7 @@ import { getUserId } from "../../reducks/users/selectors";
 import { db } from "../../firebase/index"
 import NoImage from '../../assets/img/src/no_image.png'
 
-const CartListItem = (props) => {
+const CartListItem = ({ product }) => {
     const classes = (makeStyles((theme) => ({
         list: {
             height: 128
@@ -28,8 +28,8 @@ const CartListItem = (props) => {
     })))()
 
     const selector = useSelector(state => state);
-    const image = props.product.images.length ? props.product.images[0].path : NoImage;
-    const price = props.product.price.toLocaleString();
+    const image = product.images.length ? product.images[0].path : NoImage;
+    const price = product.price.toLocaleString();
 
     const removeProductFromCart = (id) => {
         const uid = getUserId(selector);
@@ -43,10 +43,10 @@ const CartListItem = (props) => {
                     <img className={classes.image} src={image} alt="商品のTOP画像" />
                 </ListItemAvatar>
                 <div className={classes.text}>
-                    <ListItemText primary={props.product.name} secondary={"サイズ：" + props.product.size} />
+                    <ListItemText primary={product.name} secondary={"サイズ：" + product.size} />
                     <ListItemText primary={"¥" + price} />
                 </div>
-                <IconButton onClick={() => removeProductFromCart(props.product.cartId)} >
+                <IconButton onClick={() => removeProductFromCart(product.cartId)} >
                     <DeleteIcon />
                 </IconButton>
             </ListItem>

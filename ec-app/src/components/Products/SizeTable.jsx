@@ -6,7 +6,7 @@ import { makeStyles } from "@material-ui/styles";
 
 
 
-const SizeTable = (props) => {
+const SizeTable = ({ sizes, product, addProduct }) => {
 
     const classes = (makeStyles({
         iconCell: {
@@ -15,9 +15,6 @@ const SizeTable = (props) => {
             width: 48
         }
     }))();
-
-    const sizes = props.sizes;
-    const product = props.product
 
     return (
         <TableContainer>
@@ -30,7 +27,7 @@ const SizeTable = (props) => {
                                 <TableCell>残り{item.quantity}点</TableCell>
                                 <TableCell className={classes.iconCell}>
                                     {item.quantity > 0 ? (
-                                        <IconButton onClick={() => { props.addProduct(item.size) }}
+                                        <IconButton onClick={() => { addProduct(item.size) }}
                                             className={classes.iconCell}
                                         >
                                             <ShoppingCart />
