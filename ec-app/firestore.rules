@@ -1,18 +1,35 @@
 rules_version = '2';
 service cloud.firestore {
     match /databases/{database}/documents {
-
-        function isAnyAuthnication() {//ログインしているかを確認
+    
+        //ログインしているかを確認
+        function isAnyAuthnication() {
             return request.auth != null;
         }
 
-        function isUserAuthenticated(userId){//ログインしている、かつログインしているユーザーと参照しているユーザーのidが同じか、
+        //ログインしているユーザーのidを取得
+        function loginUserId() {
+            return request.auth.uid;
+        }
+
+        //ログインしている、かつログインしているユーザーと参照しているユーザーのidが同じか、
+        function isUserAuthenticated(userId){
             return isAnyAuthnication() && request.auth.uid == userId;
         }
 
-        // request.resource.dataを返す関数
-        function inputData(key) {
-            return request.resource.data[key];
+        // 今リクエストをしているデータ
+        function incomingData(fieldName) {
+            return request.resource.data[fieldName];
+        }
+        
+        // すでにfirestore側にあるデータ(firebase.firestore.FieldValue.serverTimestamp();を使えば同じになる。nowを使うと一致しないのでエラーになる)
+        function existingDataField(fieldName) {
+            return resource.data[fieldName];
+        }
+
+        // ドキュメントのパス生成関数
+        function documentPath(paths) {
+            return path([['databases', database, 'documents'].join('/'), paths.join('/')].join('/'));
         }
 
         // フィールドの値がstringの場合のバリデーション関数
@@ -22,37 +39,84 @@ service cloud.firestore {
 
         // フィールドの値がintの場合のバリデーション関数
         function validateInt(num, min, max) {
-        return num is int && min <= num && num <= max;
+            return num is int && min <= num && num <= max;
+        }
+        
+        // フィールドの値がstringの場合のバリデーション関数
+        function validateTimeStamp(date) {
+            return incomingData(date) is timestamp && incomingData(date) == request.time;
+        }
+
+        // インクリメントのチェック！（使い道として『postCount』『LikeCount』）
+        function isfieldIncremented(fieldName, value) {
+            return (resource == null && incomingData(fieldName) == value)//投稿がない時、かつリクエストした値とincrementした値が等しいか
+                    || incomingData(fieldName) == existingDataField(fieldName) + value;//リクエストしたデータ == 元のデータにincrementした値が等しい。
+        }
+        
+        // ディクリメントのチェック！
+        function isfielddecremented(fieldName, value) {
+            return !(resource == null && incomingData(fieldName) == value)//0の状態からの減算はだめ。
+                    || incomingData(fieldName) == existingDataField(fieldName) - value;
+        }
+
+        // 更新して欲しくないものupdata時されて欲しくないものフィールドを指定
+        function isNotUpdating(fieldName){
+            return !(fieldName in request.resource.data)
+                    || incomingData(fieldName) == resource.data[fieldName];
+        }
+
+        // 引数には許可したい配列のフィールドを入れる
+        function writingToAllowedField(AllowedFields) {
+            return AllowedFields.hasAll(request.resource.data.keys());
+        }
+        // 商品の作成、更新時に使う
+        function isproductFieldCheck() {
+            return isAnyAuthnication()
+                //category
+                && incomingData("category") != null
+                && incomingData("category") in [ "tops" , "pants" , "shirts" ]
+                //description
+                && incomingData("description") != null
+                && validateString(incomingData("description"), 1, 200)
+                // gender 
+                && incomingData("gender") != null
+                && incomingData("gender") in [ "all" , "men" , "female" ]
+                // name
+                && incomingData("name") != null
+                && validateString(incomingData("name"), 1, 30)
+                // price
+                && incomingData("price") != null
+                && validateInt(incomingData("price"), 100, 1000000)
+                // sizes
+                && incomingData("sizes").size() != 0
+                // updated_at
+                && validateTimeStamp("updated_at");
         }
 
         match /users/{userId} {
-            allow get: if isAnyAuthnication();
-            allow list: if isAnyAuthnication();
-            allow create: 
-                if isUserAuthenticated(userId) 
+            allow get: if isUserAuthenticated(userId);
+            allow list: if isUserAuthenticated(userId);
+            allow create: if isUserAuthenticated(userId) 
                 //username
-                && inputData("username") != null 
-                && inputData("username") is string 
-                && validateString(inputData("username"), 1, 20)
+                && incomingData("username") != null 
+                && validateString(incomingData("username"), 1, 20)
                 // email
-                && validateString(inputData("email"), 1, 20)
-                && inputData("email") == request.auth.token.email
-                && inputData("email").matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")//正直あまり意味が分かっていないが動作はする模様。
-                // password
-                && validateString(inputData("password"), 6, 20)
+                && validateString(incomingData("email"), 1, 100)
+                && incomingData("email") == request.auth.token.email
+                && incomingData("email").matches("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")//正直あまり意味が分かっていないが動作はする模様。
                 //created_at
-                && inputData("created_at") == request.time;//firebase.firestore.FieldValue.serverTimestamp();を使えば同じになる。nowを使うと一致しないのでエラーになる。
-            allow update: 
-                if isUserAuthenticated(userId)
-                && inputData("updated_at") == request.time;
-            allow delete:
-                if isUserAuthenticated(userId)
+                && incomingData("created_at") != null
+                && validateTimeStamp("created_at");
+            allow update;
+            allow delete;
+
             match /cart/{cartId} {
                 allow get: 
-                    if isAnyAuthnication();
+                    if isUserAuthenticated(userId);
                 allow list:
-                    if isAnyAuthnication();
-                allow create;
+                    if isUserAuthenticated(userId);
+                allow create:
+                    if isUserAuthenticated(userId);
                 allow update:
                     if isUserAuthenticated(userId);
                 allow delete:
@@ -65,12 +129,11 @@ service cloud.firestore {
                 if isAnyAuthnication();
             allow list:
                 if isAnyAuthnication();
-            allow create;
-                if isAnyAuthnication();
-            allow update: 
-                if isAnyAuthnication();
-            allow delete:
-                if isAnyAuthnication();
+            allow create: if isproductFieldCheck()
+                && validateTimeStamp("created_at");
+            allow update: if isproductFieldCheck()
+                && isNotUpdating("created_at");
+            allow delete;
         }
     }
 }
