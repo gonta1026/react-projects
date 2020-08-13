@@ -44,19 +44,13 @@ service cloud.firestore {
         
         // フィールドの値がstringの場合のバリデーション関数
         function validateTimeStamp(date) {
-            return incomingData(date) is timestamp && incomingData(date) == request.time;
+            return incomingData(date) != null && incomingData(date) is timestamp && incomingData(date) == request.time;
         }
 
         // インクリメントのチェック！（使い道として『postCount』『LikeCount』など）
-        function isfieldIncremented(fieldName, value) {
-            return (resource == null && incomingData(fieldName) == value)//投稿がない時、かつリクエストした値とincrementした値が等しいか
-                || incomingData(fieldName) == existingDataField(fieldName) + value;//リクエストしたデータ == 元のデータにincrementした値が等しい。
-        }
-        
-        // ディクリメントのチェック！
-        function isfielddecremented(fieldName, value) {
-            return !(resource == null && incomingData(fieldName) == value)//0の状態からの減算はだめ。
-                || incomingData(fieldName) == existingDataField(fieldName) - value;
+        function isfieldIncremented(fieldName, IncrementValue) {
+            return (resource == null && incomingData(fieldName) == IncrementValue)//投稿がない時、もしくはリクエストした値とincrementした値が等しいか
+                || incomingData(fieldName) == existingDataField(fieldName) + IncrementValue;//リクエストされたデータ == 元のデータ + incrementされる数
         }
 
         // 更新して欲しくないものupdata時されて欲しくないものフィールドを指定
@@ -76,7 +70,7 @@ service cloud.firestore {
                 //category
                 && incomingData("category") != null
                 && incomingData("category") in [ "tops" , "pants" , "shirts" ]
-                //description
+                // description
                 && incomingData("description") != null
                 && validateString(incomingData("description"), 1, 200)
                 // gender 
@@ -89,7 +83,7 @@ service cloud.firestore {
                 && incomingData("price") != null
                 && validateInt(incomingData("price"), 100, 1000000)
                 // sizes
-                && incomingData("sizes").size() != 0
+                && incomingData("sizes").size() > 0
                 // updated_at
                 && validateTimeStamp("updated_at");
         }
@@ -116,8 +110,8 @@ service cloud.firestore {
             allow delete;
 
             match /cart/{cartId} {
-                allow get: if isAnyAuthnication();
-                allow list: if isAnyAuthnication();
+                allow get: if isUserAuthenticated(userId);
+                allow list: if isUserAuthenticated(userId);
                 allow create:
                     if isUserAuthenticated(userId)
                     && addProductInCartData(incomingData("id")).category == incomingData("category")
@@ -127,19 +121,35 @@ service cloud.firestore {
                     && addProductInCartData(incomingData("id")).images == incomingData("images")
                     && addProductInCartData(incomingData("id")).name == incomingData("name")
                     && addProductInCartData(incomingData("id")).price == incomingData("price")
-                    && 1 == incomingData("quantity");
+                    && 1 == incomingData("quantity");//  1はカートに追加する商品の数
+                allow update;
+                allow delete: if isUserAuthenticated(userId);
+            }
+
+            match /orders/{orders} {
+                allow get;
+                allow list;
+                allow create: if isUserAuthenticated(userId)
+                    && validateInt(incomingData("amount"), 1, 10000000)
+                    && validateTimeStamp("updated_at")
+                    && validateTimeStamp("created_at")
+                    && incomingData("id") != null
+                    && incomingData("products").size() > 0
+                    && incomingData("shipping_date") is timestamp
+                    && incomingData("shipping_date") != null;
                 allow update;
                 allow delete;
             }
         }
-    
+
         match /products/{productId} {
             allow get: if isAnyAuthnication();
             allow list: if isAnyAuthnication();
             allow create: if isproductFieldCheck()
                 && validateTimeStamp("created_at");
             allow update: if isproductFieldCheck()
-                && isNotUpdating("created_at");
+                && isNotUpdating("created_at")
+
             allow delete;
         }
     }
