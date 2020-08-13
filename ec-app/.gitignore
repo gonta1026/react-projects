@@ -26,6 +26,7 @@ yarn-error.log*
 # ↓↓↓↓↓追加↓↓↓↓↓
 
 .firebase
-.doc
+/doc
 /sample.jsx
+
 # ↓↓↓↓↓以上↓↓↓↓↓
