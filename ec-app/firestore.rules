@@ -127,10 +127,10 @@ service cloud.firestore {
             }
 
             match /orders/{orders} {
-                allow get;
-                allow list;
+                allow get: isUserAuthenticated(userId);
+                allow list: isUserAuthenticated(userId);
                 allow create: if isUserAuthenticated(userId)
-                    && validateInt(incomingData("amount"), 1, 10000000)
+                    && validateInt(incomingData("amount"), 100, 10000000)
                     && validateTimeStamp("updated_at")
                     && validateTimeStamp("created_at")
                     && incomingData("id") != null
