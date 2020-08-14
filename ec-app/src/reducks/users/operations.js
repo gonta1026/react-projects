@@ -1,11 +1,11 @@
-import { signInAction, signOutAction, fetchProductInCartAction } from "./actions"
+import { signInAction, signOutAction, fetchProductInCartAction, fetchOrdersHistoryAction } from "./actions"
 import { push } from "connected-react-router";
 import { db, auth, serverTimestamp } from "../../firebase/index"
+import { isValidEmailFormat } from "../../functions/common";
 
 const usersRef = db.collection("users");
 
 export const listenAuthState = (pathname) => {
-    console.log(pathname)
     return async (dispatch) => {
         return auth.onAuthStateChanged(user => {
             if (user) {
@@ -30,6 +30,17 @@ export const listenAuthState = (pathname) => {
 export const fetchProductInCart = (products) => {
     return async (dispatch) => {
         dispatch(fetchProductInCartAction(products))
+    }
+};
+
+
+export const fetchOrdersHistory = (products) => {
+    return async (dispatch, getState) => {
+        const uid = getState().users.uid;
+        const snapShot = await usersRef.doc(uid).collection("orders").orderBy("updated_at", "desc").get();
+        const data = snapShot.docs.map(doc => doc.data());
+        const list = [...data];//非破壊的にしてみた。
+        dispatch(fetchOrdersHistoryAction(list));
     }
 };
 
@@ -100,26 +111,28 @@ export const signUp = (username, email, password, confirmPassword) => {
             alert("パスワードが一致していません！");
             return false;
         }
-        auth.createUserWithEmailAndPassword(email, password)
-            .then((result) => {
-                const user = result.user;
-
-                if (user) {
-                    const uid = user.uid;
-                    const initialUserData = {
-                        created_at: serverTimestamp(),
-                        email: email,
-                        username: username,
-                        uid: uid,
-                        updated_at: serverTimestamp(),
-                        role: "customer"
-                    }
-                    db.collection("users").doc(uid).set(initialUserData)
-                        .then(() => {
-                            dispatch(push("/"));
-                        });
+        try {
+            const result = await auth.createUserWithEmailAndPassword(email, password)
+            const user = result.user;
+            if (user) {
+                const uid = user.uid;
+                const initialUserData = {
+                    created_at: serverTimestamp(),
+                    email: email,
+                    username: username,
+                    uid: uid,
+                    updated_at: serverTimestamp(),
+                    role: "customer"
                 }
-            });
+                await db.collection("users").doc(uid).set(initialUserData)
+                dispatch(push("/"));
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        // .then((result) => {
+        // });
     }
 }
 
@@ -135,19 +148,17 @@ export const signOut = () => {
 
 export const resetPassword = (email) => {
     return async (dispatch) => {
-        if (email === "") {
-            alert("入力がされていません！");
-            return false;
+        if (!isValidEmailFormat(email)) {
+            alert('メールアドレスの形式が不正です。')
+            return false
         } else {
-            auth.sendPasswordResetEmail()
+            return auth.sendPasswordResetEmail(email)
                 .then(() => {
-                    alert("登録のメールアドレスにパスワードリセット用のメールをお送りしました！");
-                    dispatch(push("/signin"));
+                    alert('入力されたアドレス宛にパスワードリセットのメールをお送りしましたのでご確認ください。')
+                    dispatch(push('/signin'))
+                }).catch(() => {
+                    alert('登録されていないメールアドレスです。もう一度ご確認ください。')
                 })
-                .catch(() => {
-                    alert("パスワードのリセットに失敗しました！");
-                });
         }
     }
 }
-

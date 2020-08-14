@@ -53,6 +53,7 @@ export const saveProduct = (id, name, description, category, price, gender, imag
             data.created_at = serverTimestamp();
         }
 
+
         productsRef.doc(id).set(data, { merge: true })
             .then(() => {
                 dispatch(push("/"));
@@ -69,14 +70,12 @@ export const orderProduct = (productsInCart, price) => {
 
         const uid = getState().users.uid;
         const userRef = db.collection('users').doc(uid);
-        const timestamp = serverTimestamp();
-        const timestampNow = timestamp.now();
         let products = [];
         let soldOutProducts = [];
 
         const batch = db.batch();
         for (const product of productsInCart) {
-            const snapshot = await productsRef.doc(product.id).get();//商品情報を取得
+            const snapshot = await productsRef.doc(product.id).get(); //商品情報を取得
             const sizes = snapshot.data().sizes;
             // Create a new array of the product sizes
             const updateSizes = sizes.map(size => {
@@ -93,7 +92,7 @@ export const orderProduct = (productsInCart, price) => {
                     return size
                 }
             });
-            console.log(updateSizes);
+
             products.push({
                 id: product.id,
                 images: product.images,
@@ -102,16 +101,15 @@ export const orderProduct = (productsInCart, price) => {
                 size: product.size
             });
             batch.update(
-                productsRef.doc(product.id),
-                {
-                    sizes: updateSizes,
-                    updated_at: timestamp
-                }
+                productsRef.doc(product.id), {
+                sizes: updateSizes,
+                updated_at: serverTimestamp()
+            }
             );
+
             const productsRefsnapshot = await productsRef.doc(product.id).get();
-            batch.delete(
-                userRef.collection('cart').doc(product.cartId)
-            );
+
+            batch.delete(userRef.collection('cart').doc(product.cartId));
         }
 
         if (soldOutProducts.length > 0) {
@@ -121,25 +119,23 @@ export const orderProduct = (productsInCart, price) => {
         } else {
             batch.commit()
                 .then(() => {
-
                     const orderRef = userRef.collection('orders').doc();
-                    const date = timestampNow.toDate();
-
+                    const date = timestamp.now().toDate();
                     const shippingDate = timestamp.fromDate(new Date(date.setDate(date.getDate() + 3)));
-
                     const history = {
                         amount: price,
-                        created_at: timestamp,
+                        created_at: serverTimestamp(),
                         id: orderRef.id,
                         products: products,
                         shipping_date: shippingDate,
-                        updated_at: timestamp
+                        updated_at: serverTimestamp()
                     };
-
                     orderRef.set(history);
-
                     dispatch(push('/order/complete'))
                 })
+                .catch((error) => {
+                    alert(error + "エラーが発生したぞー");
+                });
         }
     }
 }

@@ -32,3 +32,10 @@ export const fetchProductInCartAction = (products) => {
     }
 }
 
+export const FETCH_ORDERS_HISTORY_ACTION = "FETCH_ORDERS_HISTORY_ACTION";
+export const fetchOrdersHistoryAction = (products) => {
+    return {
+        type: "FETCH_ORDERS_HISTORY_ACTION",
+        payload: products
+    }
+}
