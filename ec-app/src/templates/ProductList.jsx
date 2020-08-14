@@ -7,7 +7,6 @@ const ProductList = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const products = getProducts(selector);
-    console.log(products);
     useEffect(() => {//didmountで読み込み時の処理
         dispatch(fetchProduct());
     }, []);

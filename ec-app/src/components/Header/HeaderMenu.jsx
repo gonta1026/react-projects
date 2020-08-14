@@ -24,7 +24,6 @@ const HeaderMenu = ({ handleDrawerToggle }) => {
                     const changeType = change.type;
                     switch (changeType) {
                         case "added":
-                            console.log("added!!!");
                             productInCart.push(product);
                             break;
                         case "modified":

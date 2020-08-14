@@ -2,9 +2,6 @@ import * as Actions from './actions';
 import { initialState } from '../store/initialState';
 
 export const ProductsReducer = (state = initialState.products, action) => {
-    console.log("reducers");
-    console.log(state)
-    console.log(action)
     switch (action.type) {
         case Actions.FETCH_PRODUCTS:
             return {
@@ -17,7 +14,6 @@ export const ProductsReducer = (state = initialState.products, action) => {
                 list: [...action.payload]
             };
         default:
-            console.log("defaultだー")
             return state
     }
 };

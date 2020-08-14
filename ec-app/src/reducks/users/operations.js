@@ -70,7 +70,6 @@ export const addProductToCart = (product, selectedSize) => {
 
 
 export const signIn = (email, password) => {
-    console.log("operationsです")
     return async (dispatch) => {
         if (email === "" || password === "") {
             alert("入力もれがあります！");
@@ -128,7 +127,6 @@ export const signUp = (username, email, password, confirmPassword) => {
                 dispatch(push("/"));
             }
         } catch (error) {
-            console.log(error)
         }
 
         // .then((result) => {
