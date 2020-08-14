@@ -5,6 +5,7 @@ import { ImageArea, SetSizesArea } from "../components/Products";
 import { useDispatch } from "react-redux";
 import { saveProduct } from "../reducks/products/operations";
 import { db } from "../firebase/index";
+
 const ProductEdit = () => {
     const dispatch = useDispatch();
     let id = window.location.pathname.split("/product/edit")[1];
@@ -13,8 +14,9 @@ const ProductEdit = () => {
     }
 
     const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
     const [category, setCategory] = useState("");
+    const [categories, setCategories] = useState([]);
+    const [description, setDescription] = useState("");
     const [price, setPrice] = useState("");
     const [images, setImages] = useState([]);
     const [gender, setGender] = useState("");
@@ -31,12 +33,6 @@ const ProductEdit = () => {
     const inputPrice = useCallback((e) => {
         setPrice(e.target.value);
     }, [setPrice]);
-
-    const categories = [
-        { id: "tops", name: "トップス" },
-        { id: "pants", name: "パンツ" },
-        { id: "shirts", name: "シャツ" },
-    ];
 
     const genders = [
         { id: "all", name: "全て" },
@@ -59,7 +55,22 @@ const ProductEdit = () => {
                 });
         }
     }, [id]);
-    console.log(images);
+
+    useEffect(() => {
+        db.collection("categories")
+            .orderBy("order", "desc")
+            .get().then(querySnapshot => {
+                const list = [];
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const { id, name } = doc.data();
+                    list.push({ id, name });
+                });
+                setCategories(list);
+            });
+    }, []);
+
+
     return (
         <section>
             <h2 className="u-text__headline u-text-center">商品の登録・編集</h2>

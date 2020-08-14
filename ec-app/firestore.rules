@@ -127,8 +127,8 @@ service cloud.firestore {
             }
 
             match /orders/{orders} {
-                allow get: isUserAuthenticated(userId);
-                allow list: isUserAuthenticated(userId);
+                allow get: if isUserAuthenticated(userId);
+                allow list: if isUserAuthenticated(userId);
                 allow create: if isUserAuthenticated(userId)
                     && validateInt(incomingData("amount"), 100, 10000000)
                     && validateTimeStamp("updated_at")
@@ -151,6 +151,14 @@ service cloud.firestore {
                 && isNotUpdating("created_at")
 
             allow delete;
+        }
+        
+        match /categories/{categoryId} {
+            allow get: if isAnyAuthnication();
+            allow list: if isAnyAuthnication();
+            allow create: if isAnyAuthnication();
+            allow update: if isAnyAuthnication();
+            allow delete: if isAnyAuthnication();
         }
     }
 }
