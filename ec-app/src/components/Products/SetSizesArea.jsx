@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { TextInput } from "../UIkit";
 import IconButton from "@material-ui/core/IconButton";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -74,10 +74,9 @@ const SetSizesArea = (props) => {
         setSizes(newSizes);
     }
 
-    const memoIndex = useMemo(() => {
-        alert("sizeの初期値設定と追加、削除時はここが実行されます！")
-        setIndex(sizes.length)
-    }, [sizes.length])
+    useEffect(() => {
+        setIndex(sizes.length);
+    }, [sizes.length]);
 
     return (
         <div aria-label="サイズ展開">

@@ -59,7 +59,7 @@ const ClosableDrawer = ({ container, inputSearchKeyword, setSearchKeyword, onClo
     // const [searchKeyword, setSearchKeyword] = useState(""),
     const [filters, setFilters] = useState([
         { func: selectMenu, label: "すべて", id: "all", value: "/" },
-        { func: selectMenu, label: "メンズ", id: "man", value: "/?gender=man" },
+        { func: selectMenu, label: "メンズ", id: "men", value: "/?gender=men" },
         { func: selectMenu, label: "レディース", id: "female", value: "/?gender=female" },
     ]);
 
