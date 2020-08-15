@@ -7,10 +7,12 @@ const ProductList = () => {
     const dispatch = useDispatch();
     const selector = useSelector((state) => state);
     const products = getProducts(selector);
-    console.log(products);
-    useEffect(() => {//didmountで読み込み時の処理
-        dispatch(fetchProduct());
-    }, []);
+    const query = selector.router.location.search;
+    const gender = /^\?gender=/.test(query) ? query.split("gender=")[1] : "";
+    const category = /^\?category=/.test(query) ? query.split("category=")[1] : "";
+    useEffect(() => {
+        dispatch(fetchProduct(gender, category));
+    }, [query]);
 
     return (
         <section className="c-section-wrapin">

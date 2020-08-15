@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { TextInput } from "../UIkit";
 import IconButton from "@material-ui/core/IconButton";
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
@@ -14,7 +14,8 @@ import Paper from '@material-ui/core/Paper';
 import { makeStyles } from "@material-ui/styles";
 
 
-const SetSizesArea = ({ sizes, setSizes }) => {
+const SetSizesArea = (props) => {
+    const { sizes, setSizes } = props;
 
     const classes = (makeStyles({
         checkIcon: {
@@ -43,20 +44,19 @@ const SetSizesArea = ({ sizes, setSizes }) => {
     }, [setQuantity]);
 
     const addSize = (index, size, quantity) => {
-        if (size === "" || quantity === 0) {
-            // Required input is blank
+        if (size === "" || quantity === 0) {//空であれば追加できない
             return false
         } else {
-            if (index === sizes.length) {
-                setSizes(prevState => [...prevState, { size: size, quantity: quantity }]);
-                setIndex(index + 1);
+            if (index === sizes.length) {//sizeの編集の時は必ずindexが一致するのでここを通る。
+                setSizes(prevState => [...prevState, { size: size, quantity: quantity }]);//元のsizesと追加されたsizesをマージさせる
+                // setIndex(index + 1);//memoIndexがあるのでいらないかも
                 setSize("");
                 setQuantity(0)
-            } else {
+            } else { //ここにはsizeの編集ボタンを押した後に通る。
                 const newSizes = sizes;
                 newSizes[index] = { size: size, quantity: quantity };
                 setSizes(newSizes);
-                setIndex(newSizes.length);
+                setIndex(newSizes.length) //indexを編集対象に変更
                 setSize("");
                 setQuantity(0);
             }
@@ -74,9 +74,9 @@ const SetSizesArea = ({ sizes, setSizes }) => {
         setSizes(newSizes);
     }
 
-    const memoIndex = useMemo(() => {
-        setIndex(sizes.length)
-    }, [sizes.length])
+    useEffect(() => {
+        setIndex(sizes.length);
+    }, [sizes.length]);
 
     return (
         <div aria-label="サイズ展開">

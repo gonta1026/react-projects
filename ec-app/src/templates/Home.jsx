@@ -7,7 +7,6 @@ const Home = () => {
   const dispatch = useDispatch();
   const selector = useSelector(state => state);
   const user = getUser(selector);
-  console.log("homeページだよ")
   return (
     <div>
       <h2>Homeページ</h2>
