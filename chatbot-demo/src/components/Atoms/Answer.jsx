@@ -9,6 +9,7 @@ const useStyles = makeStyles(() =>
       color: "#FFB549",
       fontWeight: 600,
       marginBottom: "8px",
+      textTransform: 'none',
       "&:hover": {
         backgroundColor: "#FFB549",
         color: "#fff"
@@ -17,10 +18,12 @@ const useStyles = makeStyles(() =>
   }),
 );
 
-const Answer = (props) =>{
+
+
+const Answer = (props) => {
   const classes = useStyles();
-  return( 
-    <Button disabled={props.disabled} className={classes.button} variant="outlined" onClick={() => { props.selected(props.content, props.nextId)}}>{props.content}</Button>
+  return (
+    <Button disabled={props.disabled} className={classes.webButton} className={classes.button} variant="outlined" onClick={() => { props.selected(props.content, props.nextId) }}>a</Button>
   )
 }
 
