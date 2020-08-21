@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ProductCard } from '../components/Products';
 import { fetchProduct } from '../reducks/products/operations';
@@ -14,8 +14,14 @@ const ProductList = () => {
         dispatch(fetchProduct(gender, category));
     }, [query]);
 
+    const el = useRef(null);
+    useEffect(() => {
+        console.log(el.current);
+    }, []);
+
+
     return (
-        <section className="c-section-wrapin">
+        <section className="c-section-wrapin" ref={el}>
             <div className="p-grid__row">
                 {products.length > 0 && (
                     products.map(product => (
