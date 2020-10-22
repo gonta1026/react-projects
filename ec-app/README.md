@@ -8,3 +8,4 @@ npm install --save @material-ui/core @material-ui/icons @material-ui/styles conn
 
 ### 画像スライドのためにreact-id-swiperを追加
 swiper@5.4.2 react-id-swiper@3.0.0
+

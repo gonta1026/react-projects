@@ -39,7 +39,7 @@ const ProductEdit = () => {
         { id: "men", name: "男性" },
         { id: "female", name: "女性" },
     ];
-
+    console.log(sizes)
     useEffect(() => {
         if (id !== "") {
             db.collection("products").doc(id).get()

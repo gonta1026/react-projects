@@ -6,8 +6,6 @@ import { TextDetail } from "../UIkit";
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 
-
-
 const OrderHistoryItem = (props) => {
 
     const orderedDatetime = datetimeToString(props.order.updated_at.toDate())

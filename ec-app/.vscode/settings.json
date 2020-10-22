@@ -3,5 +3,5 @@
     "files.associations": {
         "*.js": "javascriptreact"
     },
-    "editor.tabSize": 4,
+    "editor.tabSize": 2,
 }

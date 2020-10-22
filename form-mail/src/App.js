@@ -7,6 +7,7 @@ import { functions } from "./firebase/firebase"
 const App = () => {
 
     const [name, setName] = useState("");
+    const [array, setArray] = useState([""]);
     // const [pass, setPass] = useState("");
     const onSubmit = (e) => {
         e.preventDefault()
