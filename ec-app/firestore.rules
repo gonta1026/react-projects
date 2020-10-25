@@ -93,8 +93,7 @@ service cloud.firestore {
         }
 
         match /users/{userId} {
-            allow get: if isUserAuthenticated(userId);
-            allow list: if isUserAuthenticated(userId);
+            allow read: if true;
             allow create: if isUserAuthenticated(userId) 
                 //username
                 && incomingData("username") != null 
@@ -108,13 +107,10 @@ service cloud.firestore {
                 && validateTimeStamp("created_at");
             allow update;
             allow delete;
-
             match /cart/{cartId} {
-                allow get: if isUserAuthenticated(userId);
-                allow list: if isUserAuthenticated(userId);
+                allow read: if true;
                 allow create:
-                    if isUserAuthenticated(userId)
-                    && addProductInCartData(incomingData("id")).category == incomingData("category")
+                    if addProductInCartData(incomingData("id")).category == incomingData("category")
                     && addProductInCartData(incomingData("id")).id == incomingData("id")
                     && addProductInCartData(incomingData("id")).description == incomingData("description")
                     && addProductInCartData(incomingData("id")).gender == incomingData("gender")
@@ -127,8 +123,7 @@ service cloud.firestore {
             }
 
             match /orders/{orders} {
-                allow get: if isUserAuthenticated(userId);
-                allow list: if isUserAuthenticated(userId);
+                allow read: if true;
                 allow create: if isUserAuthenticated(userId)
                     && validateInt(incomingData("amount"), 100, 10000000)
                     && validateTimeStamp("updated_at")
@@ -143,8 +138,7 @@ service cloud.firestore {
         }
 
         match /products/{productId} {
-            allow get: if isAnyAuthnication();
-            allow list: if isAnyAuthnication();
+            allow read: if true;
             allow create: if isproductFieldCheck()
                 && validateTimeStamp("created_at");
             allow update: if isproductFieldCheck()
@@ -154,11 +148,11 @@ service cloud.firestore {
         }
         
         match /categories/{categoryId} {
-            allow get: if isAnyAuthnication();
-            allow list: if isAnyAuthnication();
-            allow create: if isAnyAuthnication();
-            allow update: if isAnyAuthnication();
-            allow delete: if isAnyAuthnication();
+            allow read: if true;        
+            allow write: if isAnyAuthnication();
+            // allow create: if isAnyAuthnication();
+            // allow update: if isAnyAuthnication();
+            // allow delete: if isAnyAuthnication();
         }
     }
 }
