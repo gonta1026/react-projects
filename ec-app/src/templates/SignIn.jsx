@@ -22,7 +22,7 @@ const SignIn = () => {
 
   return (
     <div className={"c-section-container"}>
-      <h2 className={"u-text__headline u-text-center"}>サインイn</h2>
+      <h2 className={"u-text__headline u-text-center"}>ログイン</h2>
       <div className={"module-spacer--medium"} />
 
       <TextInput
