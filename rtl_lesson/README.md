@@ -1,0 +1,9 @@
+- Rendering Testでコンポーネントの要素の検証
+- render
+- screen
+- debug
+- expect
+- getByRole("")
+- getByRole("heading")
+- HTMLのROLE
+- toBeTruthyでぞんざいの確認
